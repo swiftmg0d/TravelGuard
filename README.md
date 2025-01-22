@@ -2,6 +2,8 @@
 
 # TravelGuard
 
-<video src="https://github.com/user-attachments/assets/95507bfe-3097-49d9-8b72-dfc788ee9d64" controls></video>
+This video demonstrates the prototype.
+
+<video src="https://github.com/user-attachments/assets/7edcd5bd-39c6-4684-8b27-1a9af2fe7f61" controls></video>
 
 </div>
