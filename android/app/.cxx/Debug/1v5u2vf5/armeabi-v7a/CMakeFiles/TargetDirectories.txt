@@ -1,0 +1,2 @@
+C:/Users/ZIVE/Desktop/travel_guard/android/app/.cxx/Debug/1v5u2vf5/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/ZIVE/Desktop/travel_guard/android/app/.cxx/Debug/1v5u2vf5/armeabi-v7a/CMakeFiles/rebuild_cache.dir

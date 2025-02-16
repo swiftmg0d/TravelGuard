@@ -6,9 +6,11 @@ import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
 import 'package:travel_guard/widgets/auth/info_account.dart';
 import 'package:travel_guard/widgets/auth/input.dart';
 import 'package:travel_guard/widgets/auth/login_button.dart';
+import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  bool? created;
+  LoginScreen({super.key, this.created});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -17,6 +19,19 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.created != null && widget.created!) {
+        CustomScaffoldMessenger.show(
+          context,
+          'Account created successfully',
+          const Color.fromARGB(255, 1, 39, 6),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

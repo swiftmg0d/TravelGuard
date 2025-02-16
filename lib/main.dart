@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_guard/screens/home_screen.dart';
+import 'package:travel_guard/screens/splash_screen.dart';
 import 'package:travel_guard/state/auth_state.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: HomeScreen(),
+        home: SplashScreen(),
       ),
     );
   }
