@@ -27,7 +27,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
             centerPoint: widget.value,
             radius: distance.toDouble(),
             color: Colors.transparent,
-            borderColor: Colors.red,
+            borderColor: Color.fromARGB(255, 184, 46, 36),
             strokeWidth: 2,
           ));
           widget.controller.addMarker(
@@ -35,8 +35,8 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
             angle: pi / 2,
             markerIcon: MarkerIcon(
               icon: Icon(
-                Icons.location_on,
-                color: Colors.red,
+                Icons.location_on_outlined,
+                color: const Color.fromARGB(255, 71, 18, 14),
                 size: 30,
               ),
             ),
