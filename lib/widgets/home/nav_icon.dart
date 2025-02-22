@@ -5,7 +5,7 @@ import 'package:travel_guard/utils/transitions/slide_out.dart';
 class NavIcon extends StatelessWidget {
   final String text;
   final IconData icon;
-  final Widget page;
+  final String page;
   final bool isActive;
   const NavIcon({required this.text, required this.icon, required this.page, required this.isActive});
 
@@ -20,7 +20,7 @@ class NavIcon extends StatelessWidget {
             icon: Icon(icon),
             color: Color.fromARGB(255, 14, 37, 36),
             onPressed: () {
-              Navigator.of(context).push(SlideOut(page: page));
+              isActive ? null : Navigator.pushReplacementNamed(context, page);
             },
           ),
         ),

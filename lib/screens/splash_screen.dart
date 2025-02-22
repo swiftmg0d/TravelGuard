@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:travel_guard/utils/constants/messsages.dart';
-import 'package:travel_guard/screens/login_screen.dart';
 import 'package:travel_guard/widgets/splash/animated_messages.dart';
 import 'package:travel_guard/widgets/splash/button.dart';
 import 'package:travel_guard/widgets/splash/loading.dart';
@@ -41,6 +40,23 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(body: SplashWidget(isLoaded: _isLoaded, currentIndex: _currentIndex));
+  }
+}
+
+class SplashWidget extends StatelessWidget {
+  const SplashWidget({
+    super.key,
+    required bool isLoaded,
+    required int currentIndex,
+  })  : _isLoaded = isLoaded,
+        _currentIndex = currentIndex;
+
+  final bool _isLoaded;
+  final int _currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -50,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: <Widget>[
             SizedBox(height: 150),
             Logo(width: 320, height: 270),
-            _isLoaded ? Button(screen: LoginScreen(), text: "Start the journey") : Loading(),
+            _isLoaded ? Button(screen: '/login', text: "Start the journey") : Loading(),
             SizedBox(height: 40),
             AnimatedMessages(currentIndex: _currentIndex, isLoaded: _isLoaded),
             SizedBox(height: 135),

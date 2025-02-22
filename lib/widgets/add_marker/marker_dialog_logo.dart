@@ -17,11 +17,6 @@ class AddMarkerDialogLogo extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(top: 40),
           child: Center(
-              // child: Image.asset(
-              //   "assets/icons/logo.png",
-              //   fit: BoxFit.contain,
-              //   width: MediaQuery.of(context).size.width,
-              // ),
               child: Lottie.asset(
             'assets/icons_json/marker_confirm_logo.json',
             width: 200,

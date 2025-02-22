@@ -1,9 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_guard/dialogs/auth_loading_dialog.dart';
-import 'package:travel_guard/screens/home_screen.dart';
-import 'package:travel_guard/screens/login_screen.dart';
-import 'package:travel_guard/utils/transitions/slide_out.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class AuthServices {
@@ -13,7 +10,7 @@ class AuthServices {
     if (email.isNotEmpty && password.isNotEmpty) {
       try {
         final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-        Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           Navigator.of(context).pop();
@@ -42,9 +39,7 @@ class AuthServices {
         );
         Navigator.pop(context);
         if (credential.user != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => LoginScreen(created: true)),
-          );
+          Navigator.pushNamed(context, '/login', arguments: true);
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -59,8 +54,8 @@ class AuthServices {
         }
       }
     } else {
-      CustomScaffoldMessenger.show(context, 'Invalid credentials', const Color.fromARGB(255, 47, 1, 1));
       Navigator.pop(context);
+      CustomScaffoldMessenger.show(context, 'Please fill in all fields', const Color.fromARGB(255, 47, 1, 1));
     }
   }
 
@@ -68,7 +63,8 @@ class AuthServices {
     showDialog(context: context, builder: (context) => AuthLoading(message: "Logging out..."));
     Future.delayed(Duration(seconds: 3), () {
       FirebaseAuth.instance.signOut();
-      Navigator.of(context).push(SlideOut(page: LoginScreen()));
+      Navigator.of(context).pop();
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (Route<dynamic> route) => false);
     });
   }
 }

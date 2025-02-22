@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_guard/services/auth_services.dart';
+import 'package:travel_guard/state/auth_state.dart';
 
 class LoginButton extends StatelessWidget {
   final TextEditingController emailController;
@@ -14,11 +16,13 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = Provider.of<AuthState>(context);
     return SizedBox(
       height: 50,
       width: 240,
       child: ElevatedButton(
         onPressed: () {
+          authState.login();
           AuthServices.login(context, emailController.text.trim(), passwordController.text.trim());
         },
         style: ElevatedButton.styleFrom(

@@ -10,41 +10,44 @@ class MapLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Material(
-          color: Color.fromARGB(255, 244, 251, 250),
-          child: Stack(
-            children: [
-              BackgroundLogo(),
-              Container(
-                child: Center(
-                  child: LoadingAnimationWidget.inkDrop(
-                    color: Color.fromARGB(255, 21, 57, 55),
-                    size: 40,
+      body: PopScope(
+        canPop: false,
+        child: Material(
+            color: Color.fromARGB(255, 244, 251, 250),
+            child: Stack(
+              children: [
+                BackgroundLogo(),
+                Container(
+                  child: Center(
+                    child: LoadingAnimationWidget.inkDrop(
+                      color: Color.fromARGB(255, 21, 57, 55),
+                      size: 40,
+                    ),
                   ),
                 ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 100),
-                  Container(
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          "Loading the map...",
-                          style: GoogleFonts.staatliches(
-                            color: Color.fromARGB(255, 29, 78, 74),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 100),
+                    Container(
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            "Loading the map...",
+                            style: GoogleFonts.staatliches(
+                              color: Color.fromARGB(255, 29, 78, 74),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
-            ],
-          )),
+                  ],
+                )
+              ],
+            )),
+      ),
     );
   }
 }

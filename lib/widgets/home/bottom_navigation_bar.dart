@@ -25,8 +25,8 @@ class BottomNavBar extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                NavIcon(text: "History", icon: Icons.history, page: HistoryScreen(), isActive: active == 0),
-                NavIcon(text: "Markers", icon: Icons.location_on, page: HomeScreen(), isActive: active == 1),
+                NavIcon(text: "History", icon: Icons.history, page: '/history', isActive: active == 0),
+                NavIcon(text: "Markers", icon: Icons.location_on, page: '/home', isActive: active == 1),
                 Column(
                   children: [
                     Opacity(

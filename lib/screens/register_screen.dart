@@ -46,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                CustomAppBar(screen: LoginScreen()),
+                CustomAppBar(screen: '/login'),
                 const SizedBox(height: 80),
                 Text(
                   "Create an account",
@@ -87,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 InfoAccount(
                   text1: "Already have an account? ",
                   text2: "Sign in",
-                  screen: LoginScreen(),
+                  screen: '/login',
                 ),
               ],
             ),

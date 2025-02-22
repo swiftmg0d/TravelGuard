@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/screens/register_screen.dart';
-import 'package:travel_guard/screens/splash_screen.dart';
 import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
 import 'package:travel_guard/widgets/auth/info_account.dart';
 import 'package:travel_guard/widgets/auth/input.dart';
@@ -22,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    print('LoginScreen created: ${widget.created}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.created != null && widget.created!) {
         CustomScaffoldMessenger.show(
@@ -32,6 +31,26 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     });
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return LoginWidget(
+      emailController: _emailController,
+      passwordController: _passwordController,
+    );
+  }
+}
+
+class LoginWidget extends StatelessWidget {
+  const LoginWidget({
+    super.key,
+    required TextEditingController emailController,
+    required TextEditingController passwordController,
+  })  : _emailController = emailController,
+        _passwordController = passwordController;
+
+  final TextEditingController _emailController;
+  final TextEditingController _passwordController;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                CustomAppBar(screen: SplashScreen()),
+                CustomAppBar(screen: '/splash'),
                 const SizedBox(height: 80),
                 Text(
                   "Sign in to your account",
@@ -91,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 InfoAccount(
                   text1: "Don't have an account? ",
                   text2: "Sign up",
-                  screen: RegisterScreen(),
+                  screen: '/register',
                 ),
               ],
             ),

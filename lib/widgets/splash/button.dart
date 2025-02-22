@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/utils/transitions/slide_in.dart';
 
 class Button extends StatelessWidget {
-  final Widget screen;
+  final String screen;
   final String text;
   const Button({
     super.key,
@@ -20,7 +19,9 @@ class Button extends StatelessWidget {
           height: 50,
           width: 240,
           child: ElevatedButton(
-            onPressed: () => Navigator.of(context).push(SlideIn(page: screen)),
+            onPressed: () {
+              Navigator.pushNamed(context, screen);
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color.fromARGB(255, 16, 44, 43),
               padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),

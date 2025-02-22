@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SlideIn extends PageRouteBuilder {
   final Widget page;
-  final Curve curve; // Customizable curve
+  final Curve curve;
 
   SlideIn({
     required this.page,
