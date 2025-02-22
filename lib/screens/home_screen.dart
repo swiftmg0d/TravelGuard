@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_guard/screens/map_screen.dart';
 import 'package:travel_guard/state/map_state.dart';
-import 'package:travel_guard/utils/transitions/slide_out.dart';
 import 'package:travel_guard/widgets/home/logo_app_bar.dart';
 import 'package:travel_guard/widgets/home/bottom_navigation_bar.dart';
 
@@ -17,9 +16,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mapState = Provider.of<MapState>(context, listen: false);
-
       if (mapState.isLoaded) {
         Future.delayed(const Duration(microseconds: 100), () {
           mapState.unload();

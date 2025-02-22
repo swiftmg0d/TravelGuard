@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_guard/dialogs/logout_dialog.dart';
-import 'package:travel_guard/screens/history_screen.dart';
-import 'package:travel_guard/screens/home_screen.dart';
 import 'package:travel_guard/widgets/home/nav_icon.dart';
 
 class BottomNavBar extends StatelessWidget {

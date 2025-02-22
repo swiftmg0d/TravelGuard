@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_guard/services/markers_services.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:travel_guard/dialogs/add_marker_dialog.dart';
 import 'package:travel_guard/widgets/map/map_loading.dart';
@@ -23,6 +24,9 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      loadMarkers(controller);
+    });
   }
 
   @override
@@ -71,4 +75,30 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ));
   }
+}
+
+void loadMarkers(MapController controller) {
+  MarkersServices.getMarkers().then((markers) {
+    markers.forEach((marker) {
+      controller.addMarker(
+        marker.markerInfo.point,
+        markerIcon: MarkerIcon(
+          icon: Icon(
+            Icons.location_on_outlined,
+            color: const Color.fromARGB(255, 71, 18, 14),
+            size: 30,
+          ),
+        ),
+        angle: marker.markerInfo.angle,
+      );
+      controller.drawCircle(CircleOSM(
+        key: marker.circleInfo.centerPoint.toString(),
+        centerPoint: marker.circleInfo.centerPoint,
+        radius: marker.circleInfo.radius,
+        color: Colors.transparent,
+        borderColor: Color.fromARGB(255, 184, 46, 36),
+        strokeWidth: marker.circleInfo.strokeWidth,
+      ));
+    });
+  });
 }

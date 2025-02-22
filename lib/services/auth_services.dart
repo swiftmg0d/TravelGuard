@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:travel_guard/dialogs/auth_loading_dialog.dart';
+import 'package:travel_guard/models/custom_user.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class AuthServices {
@@ -30,6 +35,8 @@ class AuthServices {
   }
 
   static void register(BuildContext context, String email, String password, String confirmPassword) async {
+    final FirebaseFirestore db = FirebaseFirestore.instance;
+
     showDialog(context: context, builder: (context) => AuthLoading(message: 'Creating account...'));
     if (email.isNotEmpty && password.isNotEmpty && confirmPassword.isNotEmpty && confirmPassword == password) {
       try {
@@ -38,7 +45,15 @@ class AuthServices {
           password: password,
         );
         Navigator.pop(context);
+
         if (credential.user != null) {
+          CustomUser currentUser = CustomUser(
+            id: credential.user!.uid,
+            email: email,
+            password: sha256.convert(utf8.encode(password)).toString(),
+          );
+          await db.collection('users').doc(credential.user!.uid).set(currentUser.toJson());
+
           Navigator.pushNamed(context, '/login', arguments: true);
         }
       } on FirebaseAuthException catch (e) {

@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    print('LoginScreen created: ${widget.created}');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.created != null && widget.created!) {
         CustomScaffoldMessenger.show(

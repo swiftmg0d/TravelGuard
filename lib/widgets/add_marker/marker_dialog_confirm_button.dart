@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_guard/dialogs/add_marker_dialog.dart';
+import 'package:travel_guard/models/circle_info.dart';
+import 'package:travel_guard/models/marker_info.dart';
+import 'package:travel_guard/services/markers_services.dart';
 
 class AddMarkerDialogConfirmButton extends StatelessWidget {
   const AddMarkerDialogConfirmButton({
@@ -20,7 +23,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
+      onPressed: () async {
         if (selectedIndex != -1) {
           widget.controller.drawCircle(CircleOSM(
             key: widget.value.toString(),
@@ -30,6 +33,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
             borderColor: Color.fromARGB(255, 184, 46, 36),
             strokeWidth: 2,
           ));
+
           widget.controller.addMarker(
             widget.value,
             angle: pi / 2,
@@ -41,6 +45,9 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
               ),
             ),
           );
+
+          await MarkersServices.addMarker(CircleInfo(centerPoint: widget.value, radius: distance.toDouble(), strokeWidth: 2), MarkerInfo(point: widget.value, angle: pi / 2), context);
+
           Navigator.pop(context);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

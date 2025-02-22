@@ -18,7 +18,7 @@ class MarkersServices {
         DocumentSnapshot snapshot = await ref.get();
 
         List<dynamic> markers = (snapshot.data() as Map<String, dynamic>)['markers'] ?? [];
-
+        debugPrint("Markers lenght: ${markers.length}");
         markers.add(CustomMarker(
           circleInfo: circleInfo,
           markerInfo: markerInfo,

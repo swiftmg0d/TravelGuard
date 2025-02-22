@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/utils/transitions/slide_out.dart';
 
 class NavIcon extends StatelessWidget {
   final String text;
@@ -20,7 +19,7 @@ class NavIcon extends StatelessWidget {
             icon: Icon(icon),
             color: Color.fromARGB(255, 14, 37, 36),
             onPressed: () {
-              isActive ? null : Navigator.pushReplacementNamed(context, page);
+              isActive ? null : Navigator.pushNamed(context, page);
             },
           ),
         ),

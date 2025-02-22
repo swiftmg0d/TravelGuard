@@ -7,9 +7,9 @@ import 'package:travel_guard/screens/home_screen.dart';
 import 'package:travel_guard/screens/login_screen.dart';
 import 'package:travel_guard/screens/register_screen.dart';
 import 'package:travel_guard/screens/splash_screen.dart';
-import 'package:travel_guard/state/auth_state.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:travel_guard/utils/transitions/slide_out.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthState()),
         ChangeNotifierProvider(create: (_) => MapState())
       ],
       child: const MainWidget(),
