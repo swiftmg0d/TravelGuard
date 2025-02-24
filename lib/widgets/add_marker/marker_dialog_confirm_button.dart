@@ -5,6 +5,7 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_guard/dialogs/add_marker_dialog.dart';
 import 'package:travel_guard/models/circle_info.dart';
+import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/marker_info.dart';
 import 'package:travel_guard/services/markers_service.dart';
 
@@ -25,6 +26,28 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
     return TextButton(
       onPressed: () async {
         if (selectedIndex != -1) {
+          bool isValidDistance = await MarkersService.checkIfDistanceIsValid(CustomGeopoint(latitude: widget.value.latitude, longitude: widget.value.longitude), distance);
+          if (!isValidDistance) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: Duration(seconds: 2),
+                width: 350,
+                elevation: 50,
+                backgroundColor: const Color.fromARGB(255, 47, 1, 1),
+                content: Text(
+                  'Please select distance that is not too close to other markers, or chose a different location',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.staatliches(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+            return;
+          }
           widget.controller.drawCircle(CircleOSM(
             key: widget.value.toString(),
             centerPoint: widget.value,
@@ -46,7 +69,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
             ),
           );
 
-          await MarkersService.addMarker(CircleInfo(centerPoint: widget.value, radius: distance.toDouble(), strokeWidth: 2), MarkerInfo(point: widget.value, angle: pi / 2), context);
+          await MarkersService.addMarker(CircleInfo(centerPoint: widget.value, radius: distance.toDouble()), MarkerInfo(point: widget.value, angle: pi / 2), context);
 
           Navigator.pop(context);
         } else {

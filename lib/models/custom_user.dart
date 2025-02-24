@@ -5,6 +5,7 @@ class CustomUser {
   final String email;
   final String password;
   List<CustomMarker> markers = [];
+  List<CustomMarker> history = [];
 
   CustomUser({required this.id, required this.email, required this.password});
 
@@ -14,6 +15,7 @@ class CustomUser {
       'email': email,
       'password': password,
       'markers': markers.map((e) => e.toJson()).toList(),
+      'history': history.map((e) => e.toJson()).toList(),
     };
   }
 }

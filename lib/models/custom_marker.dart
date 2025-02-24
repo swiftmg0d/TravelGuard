@@ -1,5 +1,6 @@
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:travel_guard/models/circle_info.dart';
+import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/enum/status.dart';
 import 'package:travel_guard/models/marker_info.dart';
 
@@ -9,8 +10,9 @@ class CustomMarker {
   final Status status = Status.created;
   final DateTime created = DateTime.now();
   final DateTime? finished;
+  final CustomGeopoint startingPosition;
 
-  CustomMarker({required this.markerInfo, required this.circleInfo, required this.finished});
+  CustomMarker({required this.markerInfo, required this.circleInfo, required this.finished, required this.startingPosition});
 
   Map<String, dynamic> toJson() {
     return {
@@ -19,6 +21,10 @@ class CustomMarker {
       'status': status.toString().split('.').last,
       'created': created.toIso8601String(),
       'finished': finished?.toIso8601String(),
+      'startingPosition': {
+        'latitude': startingPosition.latitude,
+        'longitude': startingPosition.longitude,
+      },
     };
   }
 
@@ -37,9 +43,9 @@ class CustomMarker {
           longitude: marker['circleInfo']['centerPoint']['longitude'] as double,
         ),
         radius: (marker['circleInfo']['radius'] as num).toDouble(),
-        strokeWidth: (marker['circleInfo']['strokeWidth'] as num).toDouble(),
       ),
       finished: marker['finished'] != null ? DateTime.parse(marker['finished']) : null,
+      startingPosition: CustomGeopoint.fromMap(marker['startingPosition']),
     );
   }
 }

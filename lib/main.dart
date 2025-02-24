@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/screens/error_screen.dart';
 import 'package:travel_guard/screens/history_screen.dart';
 import 'package:travel_guard/screens/home_screen.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Geolocator.requestPermission();
   await NotificationsService().init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -46,6 +49,7 @@ class MainWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TravelGuard',
+      navigatorKey: AppGlobal.navigatorKey,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
         useMaterial3: true,
