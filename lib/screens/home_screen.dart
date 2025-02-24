@@ -30,23 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final mapState = Provider.of<MapState>(context);
+
     return Scaffold(
-      body: HomeScreenWidget(mapState: mapState),
-    );
-  }
-}
-
-class HomeScreenWidget extends StatelessWidget {
-  const HomeScreenWidget({
-    super.key,
-    required this.mapState,
-  });
-
-  final MapState mapState;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
+        body: Material(
       child: Stack(
         children: [
           MapScreen(),
@@ -58,6 +44,6 @@ class HomeScreenWidget extends StatelessWidget {
           ],
         ],
       ),
-    );
+    ));
   }
 }

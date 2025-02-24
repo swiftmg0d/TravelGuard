@@ -8,7 +8,7 @@ import 'package:travel_guard/dialogs/auth_loading_dialog.dart';
 import 'package:travel_guard/models/custom_user.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
-class AuthServices {
+class AuthService {
   static void login(BuildContext context, String email, String password) async {
     showDialog(context: context, builder: (context) => AuthLoading(message: 'Logging in...'));
 
@@ -57,6 +57,7 @@ class AuthServices {
           Navigator.pushNamed(context, '/login', arguments: true);
         }
       } on FirebaseAuthException catch (e) {
+        print("Code is ${e.code}");
         if (e.code == 'weak-password') {
           Navigator.pop(context);
           CustomScaffoldMessenger.show(context, 'The password provided is too weak', const Color.fromARGB(255, 47, 1, 1));
@@ -76,10 +77,8 @@ class AuthServices {
 
   static void logOut(BuildContext context) async {
     showDialog(context: context, builder: (context) => AuthLoading(message: "Logging out..."));
-    Future.delayed(Duration(seconds: 3), () {
-      FirebaseAuth.instance.signOut();
-      Navigator.of(context).pop();
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (Route<dynamic> route) => false);
-    });
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pop();
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (Route<dynamic> route) => false);
   }
 }

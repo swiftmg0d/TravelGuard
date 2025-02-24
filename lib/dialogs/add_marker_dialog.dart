@@ -12,10 +12,10 @@ class AddMarkerDialog extends StatefulWidget {
   final MapController controller;
 
   const AddMarkerDialog({
-    Key? key,
+    super.key,
     required this.value,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   State<AddMarkerDialog> createState() => _AddMarkerDialogState();
@@ -24,6 +24,11 @@ class AddMarkerDialog extends StatefulWidget {
 class _AddMarkerDialogState extends State<AddMarkerDialog> {
   int selectedIndex = -1;
   int distance = 0;
+  List<int> list0fDistances = [
+    1000,
+    5000,
+    10000
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -39,36 +44,18 @@ class _AddMarkerDialogState extends State<AddMarkerDialog> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                DistanceButton(
-                  distance: 1000,
-                  isSelected: selectedIndex == 0,
-                  onSelect: () {
-                    setState(() {
-                      selectedIndex = 0;
-                      distance = 1000;
-                    });
-                  },
-                ),
-                DistanceButton(
-                  distance: 5000,
-                  isSelected: selectedIndex == 1,
-                  onSelect: () {
-                    setState(() {
-                      selectedIndex = 1;
-                      distance = 5000;
-                    });
-                  },
-                ),
-                DistanceButton(
-                  distance: 10000,
-                  isSelected: selectedIndex == 2,
-                  onSelect: () {
-                    setState(() {
-                      selectedIndex = 2;
-                      distance = 10000;
-                    });
-                  },
-                ),
+                ...list0fDistances.map((distance) {
+                  return DistanceButton(
+                    distance: distance,
+                    isSelected: selectedIndex == list0fDistances.indexOf(distance),
+                    onSelect: () {
+                      setState(() {
+                        selectedIndex = list0fDistances.indexOf(distance);
+                        this.distance = distance;
+                      });
+                    },
+                  );
+                }).toList(),
               ],
             ),
           ),

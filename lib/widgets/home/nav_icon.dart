@@ -6,7 +6,7 @@ class NavIcon extends StatelessWidget {
   final IconData icon;
   final String page;
   final bool isActive;
-  const NavIcon({required this.text, required this.icon, required this.page, required this.isActive});
+  const NavIcon({super.key, required this.text, required this.icon, required this.page, required this.isActive});
 
   @override
   Widget build(BuildContext context) {

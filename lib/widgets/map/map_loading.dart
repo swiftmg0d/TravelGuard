@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:lottie/lottie.dart';
 
 class MapLoading extends StatelessWidget {
   const MapLoading({
@@ -44,7 +45,13 @@ class MapLoading extends StatelessWidget {
                       ),
                     ),
                   ],
-                )
+                ),
+                Transform(
+                  transform: Matrix4.translationValues(205, 700, 1),
+                  child: Container(
+                    child: Lottie.asset('assets/icons_json/a3.json', width: 600, height: 300, fit: BoxFit.contain, alignment: Alignment.topRight),
+                  ),
+                ),
               ],
             )),
       ),

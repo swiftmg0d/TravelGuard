@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/screens/login_screen.dart';
 import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
 import 'package:travel_guard/widgets/auth/info_account.dart';
 import 'package:travel_guard/widgets/auth/input.dart';

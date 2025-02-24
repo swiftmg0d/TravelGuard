@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/services/auth_services.dart';
+import 'package:travel_guard/services/auth_service.dart';
 
 class RegisterButton extends StatelessWidget {
   final TextEditingController emailController;
@@ -21,7 +21,7 @@ class RegisterButton extends StatelessWidget {
       width: 240,
       child: ElevatedButton(
         onPressed: () {
-          AuthServices.register(context, emailController.text.trim(), passwordController.text.trim(), confirmPasswordController.text.trim());
+          AuthService.register(context, emailController.text.trim(), passwordController.text.trim(), confirmPasswordController.text.trim());
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromARGB(255, 16, 44, 43),

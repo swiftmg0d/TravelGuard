@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,7 @@ import 'package:travel_guard/models/custom_marker.dart';
 import 'package:travel_guard/models/marker_info.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
-class MarkersServices {
+class MarkersService {
   static Future<void> addMarker(CircleInfo circleInfo, MarkerInfo markerInfo, BuildContext context) async {
     try {
       FirebaseFirestore db = FirebaseFirestore.instance;
@@ -65,7 +63,7 @@ class MarkersServices {
       List<dynamic> rawMarkers = (snapshot.data() as Map<String, dynamic>)['markers'] ?? [];
 
       List<CustomMarker> markers = rawMarkers.map((marker) => CustomMarker.fromMap(marker as Map<String, dynamic>)).toList();
-      print("Raw markers data: ${markers[0].markerInfo.point}");
+      print("Raw markers length: ${markers.length}");
 
       return markers;
     } catch (e) {

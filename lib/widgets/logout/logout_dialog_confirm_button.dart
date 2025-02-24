@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:travel_guard/services/auth_services.dart';
+import 'package:travel_guard/services/auth_service.dart';
 
 class LogOutDialogConfirmButton extends StatelessWidget {
   const LogOutDialogConfirmButton({
@@ -12,7 +11,7 @@ class LogOutDialogConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        AuthServices.logOut(context);
+        AuthService.logOut(context);
       },
       child: Container(
         padding: EdgeInsets.only(top: 3, bottom: 3, left: 20, right: 20),

@@ -7,16 +7,19 @@ import 'package:travel_guard/screens/home_screen.dart';
 import 'package:travel_guard/screens/login_screen.dart';
 import 'package:travel_guard/screens/register_screen.dart';
 import 'package:travel_guard/screens/splash_screen.dart';
+import 'package:travel_guard/services/notifications_service.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:travel_guard/utils/transitions/slide_out.dart';
 import 'firebase_options.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationsService().init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => MapState())
       ],
-      child: const MainWidget(),
+      child: MainWidget(),
     );
   }
 }
@@ -44,7 +47,7 @@ class MainWidget extends StatelessWidget {
     return MaterialApp(
       title: 'TravelGuard',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
         useMaterial3: true,
       ),
       initialRoute: '/',
@@ -63,13 +66,15 @@ Route<dynamic>? routeLogic(RouteSettings settings) {
     case '/home':
       return MaterialPageRoute(builder: (context) => const HomeScreen());
     case '/login':
-      return MaterialPageRoute(builder: (context) => settings.arguments != null ? LoginScreen(created: settings.arguments as bool) : LoginScreen());
+      return CupertinoPageRoute(builder: (context) => settings.arguments != null ? LoginScreen(created: settings.arguments as bool) : LoginScreen());
     case '/register':
-      return MaterialPageRoute(builder: (context) => const RegisterScreen());
+      return CupertinoPageRoute(builder: (context) => const RegisterScreen());
     case '/history':
       return MaterialPageRoute(builder: (context) => const HistoryScreen());
     case '/error':
       return MaterialPageRoute(builder: (context) => const ErrorScreen());
+    case '/splash':
+      return CupertinoPageRoute(builder: (context) => const SplashScreen());
     default:
       return null;
   }

@@ -22,6 +22,7 @@ class AddMarkerDialogLogo extends StatelessWidget {
             width: 200,
             height: 200,
             fit: BoxFit.fill,
+            animate: true,
           )),
         ),
       ),

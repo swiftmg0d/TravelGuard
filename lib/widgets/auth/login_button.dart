@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:travel_guard/services/auth_services.dart';
+import 'package:travel_guard/services/auth_service.dart';
 
 class LoginButton extends StatelessWidget {
   final TextEditingController emailController;
@@ -20,7 +19,7 @@ class LoginButton extends StatelessWidget {
       width: 240,
       child: ElevatedButton(
         onPressed: () {
-          AuthServices.login(context, emailController.text.trim(), passwordController.text.trim());
+          AuthService.login(context, emailController.text.trim(), passwordController.text.trim());
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromARGB(255, 16, 44, 43),

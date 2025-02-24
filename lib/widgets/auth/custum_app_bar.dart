@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget {
           ),
         ),
         onTap: () {
-          Navigator.pushReplacementNamed(context, screen);
+          Navigator.pushNamed(context, screen);
         });
   }
 }

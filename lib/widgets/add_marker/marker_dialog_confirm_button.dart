@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_guard/dialogs/add_marker_dialog.dart';
 import 'package:travel_guard/models/circle_info.dart';
 import 'package:travel_guard/models/marker_info.dart';
-import 'package:travel_guard/services/markers_services.dart';
+import 'package:travel_guard/services/markers_service.dart';
 
 class AddMarkerDialogConfirmButton extends StatelessWidget {
   const AddMarkerDialogConfirmButton({
@@ -36,7 +36,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
 
           widget.controller.addMarker(
             widget.value,
-            angle: pi / 2,
+            angle: pi / 4,
             markerIcon: MarkerIcon(
               icon: Icon(
                 Icons.location_on_outlined,
@@ -46,7 +46,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
             ),
           );
 
-          await MarkersServices.addMarker(CircleInfo(centerPoint: widget.value, radius: distance.toDouble(), strokeWidth: 2), MarkerInfo(point: widget.value, angle: pi / 2), context);
+          await MarkersService.addMarker(CircleInfo(centerPoint: widget.value, radius: distance.toDouble(), strokeWidth: 2), MarkerInfo(point: widget.value, angle: pi / 2), context);
 
           Navigator.pop(context);
         } else {
