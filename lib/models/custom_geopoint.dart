@@ -13,14 +13,7 @@ class CustomGeopoint {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'latitude': latitude,
-      'longitude': longitude,
-    };
-  }
-
-  toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'latitude': latitude,
       'longitude': longitude,
