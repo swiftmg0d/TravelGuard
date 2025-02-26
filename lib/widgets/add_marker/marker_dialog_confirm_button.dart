@@ -1,12 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_guard/dialogs/add_marker_dialog.dart';
-import 'package:travel_guard/models/circle_info.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
-import 'package:travel_guard/models/marker_info.dart';
 import 'package:travel_guard/services/markers_service.dart';
 
 class AddMarkerDialogConfirmButton extends StatelessWidget {
@@ -27,6 +24,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
       onPressed: () async {
         if (selectedIndex != -1) {
           bool isValidDistance = await MarkersService.checkIfDistanceIsValid(CustomGeopoint(latitude: widget.value.latitude, longitude: widget.value.longitude), distance);
+
           if (!isValidDistance) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -46,32 +44,31 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
                 behavior: SnackBarBehavior.floating,
               ),
             );
-            return;
-          }
-          widget.controller.drawCircle(CircleOSM(
-            key: widget.value.toString(),
-            centerPoint: widget.value,
-            radius: distance.toDouble(),
-            color: Colors.transparent,
-            borderColor: Color.fromARGB(255, 184, 46, 36),
-            strokeWidth: 2,
-          ));
+          } else {
+            widget.controller.drawCircle(CircleOSM(
+              key: widget.value.toString(),
+              centerPoint: widget.value,
+              radius: distance.toDouble(),
+              color: Colors.transparent,
+              borderColor: Color.fromARGB(255, 184, 46, 36),
+              strokeWidth: 2,
+            ));
 
-          widget.controller.addMarker(
-            widget.value,
-            angle: pi / 4,
-            markerIcon: MarkerIcon(
-              icon: Icon(
-                Icons.location_on_outlined,
-                color: const Color.fromARGB(255, 71, 18, 14),
-                size: 30,
+            widget.controller.addMarker(
+              widget.value,
+              markerIcon: MarkerIcon(
+                icon: Icon(
+                  Icons.location_on_outlined,
+                  color: const Color.fromARGB(255, 71, 18, 14),
+                  size: 30,
+                ),
               ),
-            ),
-          );
+            );
 
-          await MarkersService.addMarker(CircleInfo(centerPoint: widget.value, radius: distance.toDouble()), MarkerInfo(point: widget.value, angle: pi / 2), context);
+            await MarkersService.addMarker(point: CustomGeopoint(latitude: widget.value.latitude, longitude: widget.value.longitude), radius: distance.toDouble());
 
-          Navigator.pop(context);
+            Navigator.pop(context);
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

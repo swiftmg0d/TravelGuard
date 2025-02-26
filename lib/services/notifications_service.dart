@@ -1,12 +1,52 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_guard/app_global.dart';
-import 'package:travel_guard/services/markers_service.dart';
+import 'package:travel_guard/dialogs/auth_loading_dialog.dart';
+import 'package:travel_guard/dialogs/destination_reached_dialog.dart';
 import 'package:travel_guard/state/map_state.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+
+Future<String> getApiKey() async {
+  final remoteConfig = FirebaseRemoteConfig.instance;
+
+  await remoteConfig.setConfigSettings(
+    RemoteConfigSettings(
+      fetchTimeout: Duration(seconds: 10),
+      minimumFetchInterval: Duration.zero,
+    ),
+  );
+
+  await remoteConfig.fetchAndActivate();
+
+  return remoteConfig.getString('geoCodeAPIKEY');
+}
+
+Future<Map<String, dynamic>> doFetching() async {
+  BuildContext currentContext = AppGlobal.navigatorKey.currentState!.context;
+  final mapState = Provider.of<MapState>(currentContext, listen: false);
+
+  final apiKey = await getApiKey();
+
+  final geoPointStart = mapState!.customMarker!.startingPosition;
+  final geoPointEnd = mapState!.customMarker!.centarPoint;
+
+  final startinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointStart.latitude},${geoPointStart.longitude}&key=${apiKey}'));
+  final endinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointEnd.latitude},${geoPointEnd.longitude}&key=${apiKey}'));
+
+  if (startinGeoPointResponse.statusCode == 200 && endinGeoPointResponse.statusCode == 200) {
+    final startinAdress = jsonDecode(startinGeoPointResponse.body)['results'][1]['formatted_address'];
+    final endinAdress = jsonDecode(endinGeoPointResponse.body)['results'][1]['formatted_address'];
+    return {
+      'startinAdress': startinAdress,
+      'endinAdress': endinAdress,
+    };
+  }
+  return {};
+}
 
 void onDidRecieveNotifacation(NotificationResponse notificationResponse) async {
   if (FirebaseAuth.instance.currentUser == null) {
@@ -18,23 +58,28 @@ void onDidRecieveNotifacation(NotificationResponse notificationResponse) async {
   mapState.setSendNotifications(false);
 
   showDialog(
-      context: currentContext,
-      builder: (currentContext) => AlertDialog(title: const Text('Notification'), content: const Text('You are in the radius of the infected person'), actions: [
-            TextButton(
-                onPressed: () async {
-                  if (mapState.customMarker != null) {
-                    await MarkersService.removeMarker(mapState.customMarker!);
-                    await Provider.of<MapState>(currentContext, listen: false).controller.removeMarker(mapState.customMarker!.markerInfo.point);
-                    await Provider.of<MapState>(currentContext, listen: false).controller.removeCircle(mapState.customMarker!.circleInfo.centerPoint.toString());
+    context: currentContext,
+    builder: (context) {
+      return AuthLoading(message: 'Gettin the current location...');
+    },
+  );
 
-                    mapState.setInRadius(false);
-                    mapState.setCustomMarker(null);
-                    mapState.setSendNotifications(true);
-                  }
-                  Navigator.pop(currentContext);
-                },
-                child: const Text('Remove'))
-          ]));
+  doFetching().then((value) {
+    if (!value.isEmpty) {
+      final String startinLocation = value['startinAdress'];
+      final String endinLocation = value['endinAdress'];
+      Navigator.pop(currentContext);
+      showDialog(
+        context: currentContext,
+        builder: (context) {
+          return DestinationReachedDialog(startinLocation: startinLocation, endinLocation: endinLocation);
+        },
+      );
+    } else {
+      print('Error fetching data');
+      MapState.resetConfig();
+    }
+  });
 
   print('Background task');
 }

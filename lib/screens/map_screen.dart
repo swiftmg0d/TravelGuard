@@ -6,6 +6,7 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/custom_marker.dart';
 import 'package:travel_guard/services/markers_service.dart';
 import 'package:travel_guard/services/notifications_service.dart';
@@ -70,7 +71,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mapState = Provider.of<MapState>(context);
+    final mapState = Provider.of<MapState>(context, listen: false);
     return OSMFlutter(
         onMapIsReady: (isReady) {
           if (isReady) {
@@ -79,6 +80,17 @@ class _MapScreenState extends State<MapScreen> {
               showDialog(context: context, builder: (context) => AddMarkerDialog(value: mapState.controller.listenerMapSingleTapping.value!, controller: mapState.controller));
             });
           }
+        },
+        onGeoPointClicked: (geoPoint) async {
+          await MarkersService.removeMarker(CustomGeopoint(latitude: geoPoint.latitude, longitude: geoPoint.longitude));
+          await Provider.of<MapState>(context, listen: false).controller.removeMarker(geoPoint);
+          await Provider.of<MapState>(context, listen: false).controller.removeCircle(geoPoint.toString());
+          if (mapState.customMarker != null && mapState.customMarker!.centarPoint.latitude == geoPoint.latitude && mapState.customMarker!.centarPoint.longitude == geoPoint.longitude) {
+            mapState.setCustomMarker(null);
+          }
+
+          mapState.setInRadius(mapState.inRadius);
+          debugPrint("GeoPoint clicked and deleted: $geoPoint");
         },
         mapIsLoading: MapLoading(),
         controller: mapState.controller,
@@ -128,14 +140,14 @@ void checkRadiusUpdate(Position position, MapState mapState, MapController contr
   debugPrint("Current position: ${position.latitude}, ${position.longitude}");
 
   for (var marker in markers) {
-    if (Geolocator.distanceBetween(position.latitude, position.longitude, marker.markerInfo.point.latitude, marker.markerInfo.point.longitude) <= marker.circleInfo.radius) {
+    if (Geolocator.distanceBetween(position.latitude, position.longitude, marker.centarPoint.latitude, marker.centarPoint.longitude) <= marker.radius) {
       mapState.setInRadius(true);
       mapState.setCustomMarker(marker);
       break;
     }
   }
 
-  if (mapState.inRadius) {
+  if (mapState.inRadius && mapState.customMarker != null) {
     NotificationsService().showNotification(
       title: title,
       body: body,
@@ -151,7 +163,7 @@ void loadMarkers(MapController controller) async {
 
   for (var marker in markers) {
     controller.addMarker(
-      marker.markerInfo.point,
+      marker.centarPoint.toGeoPoint(),
       markerIcon: MarkerIcon(
         icon: Icon(
           Icons.location_on_outlined,
@@ -162,9 +174,9 @@ void loadMarkers(MapController controller) async {
       angle: 0,
     );
     controller.drawCircle(CircleOSM(
-      key: marker.circleInfo.centerPoint.toString(),
-      centerPoint: marker.circleInfo.centerPoint,
-      radius: marker.circleInfo.radius,
+      key: marker.centarPoint.toString(),
+      centerPoint: marker.centarPoint.toGeoPoint(),
+      radius: marker.radius,
       color: Colors.transparent,
       borderColor: Color.fromARGB(255, 184, 46, 36),
       strokeWidth: 2,

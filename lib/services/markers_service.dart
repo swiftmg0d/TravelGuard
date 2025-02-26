@@ -1,32 +1,33 @@
-import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:travel_guard/models/circle_info.dart';
+import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/custom_marker.dart';
-import 'package:travel_guard/models/marker_info.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 class MarkersService {
-  static Future<void> addMarker(CircleInfo circleInfo, MarkerInfo markerInfo, BuildContext context) async {
+  static Future<void> addMarker({required CustomGeopoint point, required double radius}) async {
+    BuildContext context = AppGlobal.navigatorKey.currentState!.context;
+
     try {
       FirebaseFirestore db = FirebaseFirestore.instance;
       FirebaseAuth auth = FirebaseAuth.instance;
+
       if (auth.currentUser != null) {
         DocumentReference ref = db.collection("users").doc(auth.currentUser!.uid);
         DocumentSnapshot snapshot = await ref.get();
 
         List<dynamic> markers = (snapshot.data() as Map<String, dynamic>)['markers'] ?? [];
+
         debugPrint("Markers lenght: ${markers.length}");
+
         final startingPosition = await Geolocator.getCurrentPosition();
-// Add the marker (after converting the GeoPoint)
+
         markers.add(CustomMarker(
-          circleInfo: circleInfo,
-          markerInfo: markerInfo,
+          centarPoint: point,
+          radius: radius,
           finished: null,
           startingPosition: CustomGeopoint(
             latitude: startingPosition.latitude,
@@ -83,7 +84,7 @@ class MarkersService {
     }
   }
 
-  static Future<void> removeMarker(CustomMarker customMarker) async {
+  static Future<void> removeMarker(CustomGeopoint customMarker) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
     FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -95,9 +96,9 @@ class MarkersService {
           List<dynamic> markers = doc['markers'];
 
           markers.removeWhere((marker) {
-            final lat = (marker['markerInfo']['point']['latitude'] as num).toDouble();
-            final long = (marker['markerInfo']['point']['longitude'] as num).toDouble();
-            return lat == customMarker.markerInfo.point.latitude && long == customMarker.markerInfo.point.longitude;
+            final lat = (marker['centarPoint']['latitude'] as num).toDouble();
+            final long = (marker['centarPoint']['longitude'] as num).toDouble();
+            return lat == customMarker.latitude && long == customMarker.longitude;
           });
 
           await db.collection("users").doc(auth.currentUser!.uid).update({
@@ -121,10 +122,10 @@ class MarkersService {
       return Geolocator.distanceBetween(
             value.latitude,
             value.longitude,
-            marker.markerInfo.point.latitude,
-            marker.markerInfo.point.longitude,
+            marker.centarPoint.latitude,
+            marker.centarPoint.longitude,
           ) >=
-          (distance + marker.circleInfo.radius);
+          (distance + marker.radius);
     });
   }
 }

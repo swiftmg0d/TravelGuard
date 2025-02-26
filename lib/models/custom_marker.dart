@@ -1,49 +1,32 @@
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
-import 'package:travel_guard/models/circle_info.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/enum/status.dart';
-import 'package:travel_guard/models/marker_info.dart';
 
 class CustomMarker {
-  final MarkerInfo markerInfo;
-  final CircleInfo circleInfo;
+  final CustomGeopoint centarPoint;
+  final double radius;
   final Status status = Status.created;
   final DateTime created = DateTime.now();
   final DateTime? finished;
   final CustomGeopoint startingPosition;
 
-  CustomMarker({required this.markerInfo, required this.circleInfo, required this.finished, required this.startingPosition});
+  CustomMarker({required this.centarPoint, required this.radius, required this.finished, required this.startingPosition});
 
   Map<String, dynamic> toJson() {
     return {
-      'markerInfo': markerInfo.toJson(),
-      'circleInfo': circleInfo.toJson(),
+      'centarPoint': centarPoint.toJson(),
+      'radius': radius,
       'status': status.toString().split('.').last,
       'created': created.toIso8601String(),
       'finished': finished?.toIso8601String(),
-      'startingPosition': {
-        'latitude': startingPosition.latitude,
-        'longitude': startingPosition.longitude,
-      },
+      'startingPosition': startingPosition.toJson(),
     };
   }
 
   static CustomMarker fromMap(Map<String, dynamic> marker) {
     return CustomMarker(
-      markerInfo: MarkerInfo(
-        point: GeoPoint(
-          latitude: marker['markerInfo']['point']['latitude'] as double,
-          longitude: marker['markerInfo']['point']['longitude'] as double,
-        ),
-        angle: marker['markerInfo']['angle'] != null ? (marker['markerInfo']['angle'] as num).toDouble() : null,
-      ),
-      circleInfo: CircleInfo(
-        centerPoint: GeoPoint(
-          latitude: marker['circleInfo']['centerPoint']['latitude'] as double,
-          longitude: marker['circleInfo']['centerPoint']['longitude'] as double,
-        ),
-        radius: (marker['circleInfo']['radius'] as num).toDouble(),
-      ),
+      centarPoint: CustomGeopoint.fromMap(marker['centarPoint']),
+      radius: (marker['radius'] as num).toDouble(),
       finished: marker['finished'] != null ? DateTime.parse(marker['finished']) : null,
       startingPosition: CustomGeopoint.fromMap(marker['startingPosition']),
     );
