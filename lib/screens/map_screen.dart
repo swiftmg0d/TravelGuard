@@ -4,10 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator_platform_interface/src/models/position.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_guard/dialogs/remove_marker_dialog.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
-import 'package:travel_guard/models/custom_marker.dart';
 import 'package:travel_guard/services/markers_service.dart';
 import 'package:travel_guard/services/notifications_service.dart';
 import 'package:travel_guard/state/map_state.dart';
@@ -19,30 +18,6 @@ class MapScreen extends StatefulWidget {
 
   @override
   State<MapScreen> createState() => _MapScreenState();
-}
-
-Future<Position> _determinePosition() async {
-  bool serviceEnabled;
-  LocationPermission permission;
-
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    return Future.error('Location services are disabled.');
-  }
-
-  permission = await Geolocator.checkPermission();
-  if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied) {
-      return Future.error('Location permissions are denied');
-    }
-  }
-
-  if (permission == LocationPermission.deniedForever) {
-    return Future.error('Location permissions are permanently denied, we cannot request permissions.');
-  }
-
-  return await Geolocator.getCurrentPosition();
 }
 
 class _MapScreenState extends State<MapScreen> {
@@ -77,20 +52,39 @@ class _MapScreenState extends State<MapScreen> {
           if (isReady) {
             mapState.load();
             mapState.controller.listenerMapSingleTapping.addListener(() async {
-              showDialog(context: context, builder: (context) => AddMarkerDialog(value: mapState.controller.listenerMapSingleTapping.value!, controller: mapState.controller));
+              if (context.mounted) {
+                final parentContext = context;
+                Future.delayed(Duration.zero, () {
+                  if (parentContext.mounted) {
+                    showDialog(
+                      context: parentContext,
+                      builder: (context) => AddMarkerDialog(
+                        value: mapState.controller.listenerMapSingleTapping.value!,
+                        controller: mapState.controller,
+                      ),
+                    );
+                  }
+                });
+              }
             });
           }
         },
         onGeoPointClicked: (geoPoint) async {
-          await MarkersService.removeMarker(CustomGeopoint(latitude: geoPoint.latitude, longitude: geoPoint.longitude));
-          await Provider.of<MapState>(context, listen: false).controller.removeMarker(geoPoint);
-          await Provider.of<MapState>(context, listen: false).controller.removeCircle(geoPoint.toString());
-          if (mapState.customMarker != null && mapState.customMarker!.centarPoint.latitude == geoPoint.latitude && mapState.customMarker!.centarPoint.longitude == geoPoint.longitude) {
-            mapState.setCustomMarker(null);
+          if (context.mounted) {
+            final parentContext = context;
+            Future.delayed(Duration.zero, () {
+              if (parentContext.mounted) {
+                showDialog(
+                  context: parentContext,
+                  builder: (context) => RemoveMarkerDialog(),
+                ).then((value) async {
+                  if (value) {
+                    MapState.handleDeleting("Deleting marker...");
+                  }
+                });
+              }
+            });
           }
-
-          mapState.setInRadius(mapState.inRadius);
-          debugPrint("GeoPoint clicked and deleted: $geoPoint");
         },
         mapIsLoading: MapLoading(),
         controller: mapState.controller,
@@ -134,7 +128,7 @@ void checkRadiusUpdate(Position position, MapState mapState, MapController contr
     return;
   }
   final name = FirebaseAuth.instance.currentUser!.email?.split('@')[0];
-  final title = "Hi ${name![0].toUpperCase() + name!.substring(1)}, You're Near a Point of Interest!";
+  final title = "Hi ${name![0].toUpperCase() + name.substring(1)}, You're Near a Point of Interest!";
   final body = "You've entered the marked area. Check it out!";
 
   debugPrint("Current position: ${position.latitude}, ${position.longitude}");
@@ -143,6 +137,7 @@ void checkRadiusUpdate(Position position, MapState mapState, MapController contr
     if (Geolocator.distanceBetween(position.latitude, position.longitude, marker.centarPoint.latitude, marker.centarPoint.longitude) <= marker.radius) {
       mapState.setInRadius(true);
       mapState.setCustomMarker(marker);
+      debugPrint("${marker.toJson()}");
       break;
     }
   }

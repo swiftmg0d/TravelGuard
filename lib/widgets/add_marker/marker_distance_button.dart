@@ -6,11 +6,11 @@ class DistanceButton extends StatelessWidget {
   final VoidCallback onSelect;
 
   const DistanceButton({
-    Key? key,
+    super.key,
     required this.distance,
     required this.isSelected,
     required this.onSelect,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

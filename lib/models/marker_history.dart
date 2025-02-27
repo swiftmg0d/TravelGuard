@@ -1,29 +1,29 @@
 class MarkerHistory {
   final String startingAddress;
-  final String endingAddress;
-  final DateTime created;
+  final String destinationAddress;
+  final DateTime started;
   final DateTime finished;
   final double distance;
-  final double duration;
+  final int duration;
 
-  MarkerHistory({required this.startingAddress, required this.endingAddress, required this.created, required this.finished, required this.distance, required this.duration});
+  MarkerHistory({required this.startingAddress, required this.destinationAddress, required this.started, required this.finished, required this.distance, required this.duration});
 
   factory MarkerHistory.fromMap(Map<String, dynamic> map) {
     return MarkerHistory(
       startingAddress: map['startingAddress'],
-      endingAddress: map['endingAddress'],
-      created: DateTime.parse(map['created']),
+      destinationAddress: map['destinationAddress'],
+      started: DateTime.parse(map['started']),
       finished: DateTime.parse(map['finished']),
       distance: (map['distance'] as num).toDouble(),
-      duration: (map['duration'] as num).toDouble(),
+      duration: map['duration'] as int,
     );
   }
 
   toJson() {
     return {
       'startingAddress': startingAddress,
-      'endingAddress': endingAddress,
-      'created': created.toIso8601String(),
+      'destinationAddress': destinationAddress,
+      'started': started.toIso8601String(),
       'finished': finished.toIso8601String(),
       'distance': distance,
       'duration': duration,

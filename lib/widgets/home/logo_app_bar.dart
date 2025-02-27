@@ -52,12 +52,10 @@ class _LogoAppBarState extends State<LogoAppBar> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                child: Image.asset(
-                  'assets/icons/logo.png',
-                  width: 150,
-                  height: 150,
-                ),
+              Image.asset(
+                'assets/icons/logo.png',
+                width: 150,
+                height: 150,
               ),
               Expanded(
                 child: Padding(

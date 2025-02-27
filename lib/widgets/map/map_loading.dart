@@ -18,29 +18,23 @@ class MapLoading extends StatelessWidget {
             child: Stack(
               children: [
                 BackgroundLogo(),
-                Container(
-                  child: Center(
-                    child: LoadingAnimationWidget.inkDrop(
-                      color: Color.fromARGB(255, 21, 57, 55),
-                      size: 40,
-                    ),
+                Center(
+                  child: LoadingAnimationWidget.inkDrop(
+                    color: Color.fromARGB(255, 21, 57, 55),
+                    size: 40,
                   ),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 100),
-                    Container(
-                      child: Container(
-                        child: Center(
-                          child: Text(
-                            "Loading the map...",
-                            style: GoogleFonts.staatliches(
-                              color: Color.fromARGB(255, 29, 78, 74),
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                    Center(
+                      child: Text(
+                        "Loading the map...",
+                        style: GoogleFonts.staatliches(
+                          color: Color.fromARGB(255, 29, 78, 74),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

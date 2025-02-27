@@ -6,7 +6,7 @@ class CustomUser {
   final String email;
   final String password;
   List<CustomMarker> markers = [];
-  List<CustomMarker> history = [];
+  List<MarkerHistory> history = [];
 
   CustomUser({required this.id, required this.email, required this.password});
 

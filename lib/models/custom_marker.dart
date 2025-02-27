@@ -1,4 +1,4 @@
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/enum/status.dart';
 
@@ -7,10 +7,9 @@ class CustomMarker {
   final double radius;
   final Status status = Status.created;
   final DateTime created = DateTime.now();
-  final DateTime? finished;
   final CustomGeopoint startingPosition;
 
-  CustomMarker({required this.centarPoint, required this.radius, required this.finished, required this.startingPosition});
+  CustomMarker({required this.centarPoint, required this.radius, required this.startingPosition});
 
   Map<String, dynamic> toJson() {
     return {
@@ -18,7 +17,6 @@ class CustomMarker {
       'radius': radius,
       'status': status.toString().split('.').last,
       'created': created.toIso8601String(),
-      'finished': finished?.toIso8601String(),
       'startingPosition': startingPosition.toJson(),
     };
   }
@@ -27,8 +25,16 @@ class CustomMarker {
     return CustomMarker(
       centarPoint: CustomGeopoint.fromMap(marker['centarPoint']),
       radius: (marker['radius'] as num).toDouble(),
-      finished: marker['finished'] != null ? DateTime.parse(marker['finished']) : null,
       startingPosition: CustomGeopoint.fromMap(marker['startingPosition']),
     );
+  }
+
+  double distance() {
+    return Geolocator.distanceBetween(centarPoint.latitude, centarPoint.longitude, startingPosition.latitude, startingPosition.longitude);
+  }
+
+  static int timeFromTo(DateTime from, DateTime to) {
+    final diffrence = to.difference(from).abs();
+    return diffrence.inHours;
   }
 }

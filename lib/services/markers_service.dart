@@ -5,11 +5,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/custom_marker.dart';
+import 'package:travel_guard/models/marker_history.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class MarkersService {
   static Future<void> addMarker({required CustomGeopoint point, required double radius}) async {
-    BuildContext context = AppGlobal.navigatorKey.currentState!.context;
+    BuildContext? context = AppGlobal.navigatorKey.currentState?.context;
+
+    if (context == null || !context.mounted) {
+      debugPrint("Context is not valid. Skipping marker addition.");
+      return;
+    }
 
     try {
       FirebaseFirestore db = FirebaseFirestore.instance;
@@ -19,16 +25,15 @@ class MarkersService {
         DocumentReference ref = db.collection("users").doc(auth.currentUser!.uid);
         DocumentSnapshot snapshot = await ref.get();
 
-        List<dynamic> markers = (snapshot.data() as Map<String, dynamic>)['markers'] ?? [];
+        List<dynamic> markers = (snapshot.data() as Map<String, dynamic>?)?['markers'] ?? [];
 
-        debugPrint("Markers lenght: ${markers.length}");
+        debugPrint("Markers length: ${markers.length}");
 
         final startingPosition = await Geolocator.getCurrentPosition();
 
         markers.add(CustomMarker(
           centarPoint: point,
           radius: radius,
-          finished: null,
           startingPosition: CustomGeopoint(
             latitude: startingPosition.latitude,
             longitude: startingPosition.longitude,
@@ -38,19 +43,26 @@ class MarkersService {
         await db.collection("users").doc(auth.currentUser!.uid).update({
           'markers': markers,
         });
-        CustomScaffoldMessenger.show(
-          context,
-          'Marker successfully added!',
-          const Color.fromARGB(255, 1, 39, 6),
-        );
+
+        Future.delayed(Duration.zero, () {
+          if (context.mounted) {
+            CustomScaffoldMessenger.show(
+              context,
+              'Marker successfully added!',
+              const Color.fromARGB(255, 1, 39, 6),
+            );
+          }
+        });
       }
     } catch (e) {
-      print("Error adding marker: $e");
-      CustomScaffoldMessenger.show(
-        context,
-        'Error while adding marker!',
-        const Color.fromARGB(255, 47, 1, 1),
-      );
+      debugPrint("Error adding marker: $e");
+      if (context.mounted) {
+        CustomScaffoldMessenger.show(
+          context,
+          'Error while adding marker!',
+          const Color.fromARGB(255, 47, 1, 1),
+        );
+      }
     }
   }
 
@@ -59,7 +71,7 @@ class MarkersService {
     FirebaseAuth auth = FirebaseAuth.instance;
 
     if (auth.currentUser == null) {
-      print("No authenticated user, returning empty markers.");
+      debugPrint("No authenticated user, returning empty markers.");
       return [];
     }
 
@@ -68,18 +80,17 @@ class MarkersService {
       DocumentSnapshot snapshot = await ref.get();
 
       if (!snapshot.exists || !snapshot.data().toString().contains('markers')) {
-        print("No markers found in Firestore.");
+        debugPrint("No markers found in Firestore.");
         return [];
       }
 
-      List<dynamic> rawMarkers = (snapshot.data() as Map<String, dynamic>)['markers'] ?? [];
+      List<dynamic> rawMarkers = (snapshot.data() as Map<String, dynamic>?)?['markers'] ?? [];
 
-      List<CustomMarker> markers = rawMarkers.map((marker) => CustomMarker.fromMap(marker as Map<String, dynamic>)).toList();
-      print("Raw markers length: ${markers.length}");
+      debugPrint("Raw markers length: ${rawMarkers.length}");
 
-      return markers;
+      return rawMarkers.map((marker) => CustomMarker.fromMap(marker as Map<String, dynamic>)).toList();
     } catch (e) {
-      print("Error fetching markers: $e");
+      debugPrint("Error fetching markers: $e");
       return [];
     }
   }
@@ -127,5 +138,55 @@ class MarkersService {
           ) >=
           (distance + marker.radius);
     });
+  }
+
+  static Future<void> addMarkerHistory(MarkerHistory historyMarker) async {
+    BuildContext? context = AppGlobal.navigatorKey.currentState?.context;
+
+    if (context == null || !context.mounted) {
+      debugPrint("Context is not valid. Skipping history addition.");
+      return;
+    }
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    if (auth.currentUser == null) {
+      debugPrint("No authenticated user, skipping marker history save.");
+      return;
+    }
+
+    try {
+      DocumentSnapshot doc = await db.collection("users").doc(auth.currentUser!.uid).get();
+      List<dynamic> history = (doc.exists && doc.data() != null && (doc.data() as Map<String, dynamic>).containsKey('history')) ? List.from(doc['history']) : [];
+
+      history.add(historyMarker.toJson());
+
+      await db.collection("users").doc(auth.currentUser!.uid).update({
+        'history': history,
+      });
+
+      Future.delayed(Duration.zero, () {
+        if (context.mounted) {
+          CustomScaffoldMessenger.show(
+            context,
+            'Marker successfully added to history!',
+            const Color.fromARGB(255, 1, 39, 6),
+          );
+        }
+      });
+    } catch (e) {
+      debugPrint("Error adding marker history: $e");
+
+      Future.delayed(Duration.zero, () {
+        if (context.mounted) {
+          CustomScaffoldMessenger.show(
+            context,
+            'Error while adding marker to history!',
+            const Color.fromARGB(255, 40, 6, 6),
+          );
+        }
+      });
+    }
   }
 }

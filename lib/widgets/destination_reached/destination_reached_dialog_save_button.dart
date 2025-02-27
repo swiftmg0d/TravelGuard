@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_guard/app_global.dart';
+import 'package:travel_guard/models/custom_marker.dart';
+import 'package:travel_guard/models/marker_history.dart';
+import 'package:travel_guard/services/markers_service.dart';
+import 'package:travel_guard/state/map_state.dart';
 
 class DestinationReachedDialogSaveButton extends StatelessWidget {
+  final String startingAddress;
+  final String destinationAddress;
+  final DateTime started;
+
   const DestinationReachedDialogSaveButton({
     super.key,
+    required this.startingAddress,
+    required this.destinationAddress,
+    required this.started,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        saveMarker();
+      },
       child: Container(
         width: 100,
         padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
@@ -29,5 +44,23 @@ class DestinationReachedDialogSaveButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void saveMarker() async {
+    final currentContext = AppGlobal.navigatorKey.currentState!.context;
+    final mapState = Provider.of<MapState>(currentContext, listen: false);
+    if (mapState.customMarker != null) {
+      final targetMarker = mapState.customMarker!;
+
+      final historyMarker = MarkerHistory(startingAddress: startingAddress, destinationAddress: destinationAddress, started: mapState.customMarker!.created, finished: DateTime.now(), distance: targetMarker.distance(), duration: CustomMarker.timeFromTo(targetMarker.created, started));
+      debugPrint("Saving marker: ${historyMarker.toJson()}");
+      await MarkersService.addMarkerHistory(historyMarker);
+
+      MapState.handleDeleting("Saving marker to history...");
+
+      debugPrint("Saving marker: ${historyMarker.toJson()}");
+    } else {
+      debugPrint('Custom Marker is null');
+    }
   }
 }

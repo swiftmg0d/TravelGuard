@@ -9,7 +9,7 @@ class AddMarkerDialogCancelButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () => Navigator.pop(context),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
         decoration: BoxDecoration(

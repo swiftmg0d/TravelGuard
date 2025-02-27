@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_guard/app_global.dart';
-import 'package:travel_guard/dialogs/auth_loading_dialog.dart';
+import 'package:travel_guard/dialogs/loading_dialog.dart';
 import 'package:travel_guard/dialogs/destination_reached_dialog.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:http/http.dart' as http;
@@ -26,25 +26,41 @@ Future<String> getApiKey() async {
 }
 
 Future<Map<String, dynamic>> doFetching() async {
-  BuildContext currentContext = AppGlobal.navigatorKey.currentState!.context;
-  final mapState = Provider.of<MapState>(currentContext, listen: false);
+  BuildContext? currentContext = AppGlobal.navigatorKey.currentState?.context;
 
+  if (currentContext == null || !currentContext.mounted) {
+    debugPrint("Context is not valid. Skipping fetching.");
+    return {};
+  }
+
+  final mapState = Provider.of<MapState>(currentContext, listen: false);
   final apiKey = await getApiKey();
 
-  final geoPointStart = mapState!.customMarker!.startingPosition;
-  final geoPointEnd = mapState!.customMarker!.centarPoint;
+  final geoPointStart = mapState.customMarker?.startingPosition;
+  final geoPointEnd = mapState.customMarker?.centarPoint;
 
-  final startinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointStart.latitude},${geoPointStart.longitude}&key=${apiKey}'));
-  final endinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointEnd.latitude},${geoPointEnd.longitude}&key=${apiKey}'));
-
-  if (startinGeoPointResponse.statusCode == 200 && endinGeoPointResponse.statusCode == 200) {
-    final startinAdress = jsonDecode(startinGeoPointResponse.body)['results'][1]['formatted_address'];
-    final endinAdress = jsonDecode(endinGeoPointResponse.body)['results'][1]['formatted_address'];
-    return {
-      'startinAdress': startinAdress,
-      'endinAdress': endinAdress,
-    };
+  if (geoPointStart == null || geoPointEnd == null) {
+    debugPrint("Invalid geolocation data");
+    return {};
   }
+
+  try {
+    final startinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointStart.latitude},${geoPointStart.longitude}&key=$apiKey'));
+    final endinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointEnd.latitude},${geoPointEnd.longitude}&key=$apiKey'));
+
+    if (startinGeoPointResponse.statusCode == 200 && endinGeoPointResponse.statusCode == 200) {
+      final startinAdress = jsonDecode(startinGeoPointResponse.body)['results'][1]['formatted_address'];
+      final endinAdress = jsonDecode(endinGeoPointResponse.body)['results'][1]['formatted_address'];
+
+      return {
+        'startinAdress': startinAdress,
+        'endinAdress': endinAdress,
+      };
+    }
+  } catch (e) {
+    debugPrint("Error fetching geolocation data: $e");
+  }
+
   return {};
 }
 
@@ -53,35 +69,52 @@ void onDidRecieveNotifacation(NotificationResponse notificationResponse) async {
     return;
   }
 
-  BuildContext currentContext = AppGlobal.navigatorKey.currentState!.context;
+  BuildContext? currentContext = AppGlobal.navigatorKey.currentState?.context;
+
+  if (currentContext == null || !currentContext.mounted) {
+    debugPrint("Context is not valid. Skipping notification action.");
+    return;
+  }
+
   final mapState = Provider.of<MapState>(currentContext, listen: false);
   mapState.setSendNotifications(false);
 
-  showDialog(
-    context: currentContext,
-    builder: (context) {
-      return AuthLoading(message: 'Gettin the current location...');
-    },
-  );
-
-  doFetching().then((value) {
-    if (!value.isEmpty) {
-      final String startinLocation = value['startinAdress'];
-      final String endinLocation = value['endinAdress'];
-      Navigator.pop(currentContext);
+  Future.delayed(Duration.zero, () {
+    if (currentContext.mounted) {
       showDialog(
         context: currentContext,
+        barrierDismissible: false,
         builder: (context) {
-          return DestinationReachedDialog(startinLocation: startinLocation, endinLocation: endinLocation);
+          return LoadingDialog(message: 'Getting the current location...');
         },
       );
+    }
+  });
+
+  doFetching().then((value) {
+    if (value.isNotEmpty) {
+      final String startinLocation = value['startinAdress'];
+      final String endinLocation = value['endinAdress'];
+
+      if (currentContext.mounted) {
+        Navigator.pop(currentContext);
+        showDialog(
+          context: currentContext,
+          builder: (context) {
+            return DestinationReachedDialog(
+              startinLocation: startinLocation,
+              endinLocation: endinLocation,
+            );
+          },
+        );
+      }
     } else {
-      print('Error fetching data');
+      debugPrint('Error fetching data');
       MapState.resetConfig();
     }
   });
 
-  print('Background task');
+  debugPrint('Background task executed');
 }
 
 class NotificationsService {

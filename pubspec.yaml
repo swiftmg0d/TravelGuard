@@ -29,6 +29,7 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   timezone: ^0.10.0
   firebase_remote_config: ^5.4.1
+  cyrtranslit: ^1.0.1
 
 
   

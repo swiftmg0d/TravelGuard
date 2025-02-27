@@ -1,8 +1,9 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:travel_guard/dialogs/add_marker_dialog.dart';
+import 'package:travel_guard/dialogs/loading_dialog.dart';
+import 'package:travel_guard/main.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/services/markers_service.dart';
 
@@ -26,7 +27,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
           bool isValidDistance = await MarkersService.checkIfDistanceIsValid(CustomGeopoint(latitude: widget.value.latitude, longitude: widget.value.longitude), distance);
 
           if (!isValidDistance) {
-            ScaffoldMessenger.of(context).showSnackBar(
+            scaffoldMessengerKey.currentState?.showSnackBar(
               SnackBar(
                 duration: Duration(seconds: 2),
                 width: 350,
@@ -45,6 +46,11 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
               ),
             );
           } else {
+            showDialog(
+              context: context,
+              builder: (context) => LoadingDialog(message: "Adding marker..."),
+            );
+
             widget.controller.drawCircle(CircleOSM(
               key: widget.value.toString(),
               centerPoint: widget.value,
@@ -65,28 +71,33 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
               ),
             );
 
-            await MarkersService.addMarker(point: CustomGeopoint(latitude: widget.value.latitude, longitude: widget.value.longitude), radius: distance.toDouble());
-
+            await MarkersService.addMarker(
+              point: CustomGeopoint(latitude: widget.value.latitude, longitude: widget.value.longitude),
+              radius: distance.toDouble(),
+            );
+            Navigator.pop(context);
             Navigator.pop(context);
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              duration: Duration(seconds: 2),
-              width: 200,
-              backgroundColor: const Color.fromARGB(255, 47, 1, 1),
-              content: Text(
-                'Please select radius',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.staatliches(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  fontSize: 20,
-                  fontWeight: FontWeight.w100,
+          if (context.mounted) {
+            scaffoldMessengerKey.currentState?.showSnackBar(
+              SnackBar(
+                duration: Duration(seconds: 2),
+                width: 200,
+                backgroundColor: const Color.fromARGB(255, 47, 1, 1),
+                content: Text(
+                  'Please select radius',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.staatliches(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w100,
+                  ),
                 ),
+                behavior: SnackBarBehavior.floating,
               ),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+            );
+          }
         }
       },
       child: Container(

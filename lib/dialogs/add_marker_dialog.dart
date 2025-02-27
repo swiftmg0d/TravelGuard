@@ -55,7 +55,7 @@ class _AddMarkerDialogState extends State<AddMarkerDialog> {
                       });
                     },
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
