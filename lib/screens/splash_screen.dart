@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_guard/state/conectivity_state.dart';
 import 'package:travel_guard/utils/constants/messsages.dart';
 import 'package:travel_guard/widgets/splash/animated_messages.dart';
 import 'package:travel_guard/widgets/splash/button.dart';
@@ -23,6 +25,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
+        Navigator.pushNamed(context, '/error', arguments: '/splash');
+      }
+    });
     startTimer();
   }
 

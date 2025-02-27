@@ -10,10 +10,12 @@ import 'package:travel_guard/screens/login_screen.dart';
 import 'package:travel_guard/screens/register_screen.dart';
 import 'package:travel_guard/screens/splash_screen.dart';
 import 'package:travel_guard/services/notifications_service.dart';
+import 'package:travel_guard/state/conectivity_state.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -35,18 +37,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => MapState())
+        ChangeNotifierProvider(create: (_) => MapState()),
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider())
       ],
       child: MainWidget(),
     );
   }
 }
 
-class MainWidget extends StatelessWidget {
+class MainWidget extends StatefulWidget {
   const MainWidget({
     super.key,
   });
 
+  @override
+  State<MainWidget> createState() => _MainWidgetState();
+}
+
+class _MainWidgetState extends State<MainWidget> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -79,7 +87,7 @@ Route<dynamic>? routeLogic(RouteSettings settings) {
     case '/history':
       return MaterialPageRoute(builder: (context) => const HistoryScreen());
     case '/error':
-      return MaterialPageRoute(builder: (context) => const ErrorScreen());
+      return MaterialPageRoute(builder: (context) => settings.arguments != null ? ErrorScreen(screen: settings.arguments.toString()) : const ErrorScreen(screen: '/'));
     case '/splash':
       return CupertinoPageRoute(builder: (context) => const SplashScreen());
     default:

@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_guard/models/custom_marker.dart';
+import 'package:travel_guard/state/conectivity_state.dart';
 import 'package:travel_guard/widgets/home/bottom_navigation_bar.dart';
 import 'package:travel_guard/widgets/home/logo_app_bar.dart';
 
@@ -15,6 +17,17 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   final user = FirebaseAuth.instance.currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
+        Navigator.pushNamed(context, '/error', arguments: '/history');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

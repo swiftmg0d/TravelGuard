@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_guard/state/conectivity_state.dart';
 import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
 import 'package:travel_guard/widgets/auth/info_account.dart';
 import 'package:travel_guard/widgets/auth/input.dart';
@@ -16,6 +18,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
+        Navigator.pushNamed(context, '/error', arguments: '/register');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

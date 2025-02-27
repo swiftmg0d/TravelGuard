@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_guard/state/conectivity_state.dart';
 import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
 import 'package:travel_guard/widgets/auth/info_account.dart';
 import 'package:travel_guard/widgets/auth/input.dart';
@@ -27,6 +29,9 @@ class _LoginScreenState extends State<LoginScreen> {
           'Account created successfully',
           const Color.fromARGB(255, 1, 39, 6),
         );
+      }
+      if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
+        Navigator.pushNamed(context, '/error', arguments: '/login');
       }
     });
   }
