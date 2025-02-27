@@ -12,17 +12,21 @@ class _RemoveMarkerDialogState extends State<RemoveMarkerDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Text('Are you sure you want to delete this marker?',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.staatliches(
-            color: Color.fromARGB(255, 14, 37, 36),
-            fontSize: 17,
-            fontWeight: FontWeight.bold,
-          )),
+      content: Container(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        width: 150,
+        child: Text('Are you sure you want to delete this marker?',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.staatliches(
+              color: Color.fromARGB(255, 14, 37, 36),
+              fontSize: 19,
+              fontWeight: FontWeight.bold,
+            )),
+      ),
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(false);
           },
           child: Container(
             width: 100,

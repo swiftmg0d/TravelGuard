@@ -38,38 +38,41 @@ class _LogoAppBarState extends State<LogoAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(children: [
-          Container(
-            margin: EdgeInsets.only(top: 45, left: 153),
-            child: Text(
-              message,
-              style: GoogleFonts.staatliches(fontSize: 16, color: Color.fromARGB(255, 19, 50, 49)),
-              softWrap: true,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image.asset(
-                'assets/icons/logo.png',
-                width: 150,
-                height: 150,
+    return Container(
+      margin: EdgeInsets.only(top: 5),
+      child: Column(
+        children: [
+          Stack(children: [
+            Container(
+              margin: EdgeInsets.only(top: 45, left: 153),
+              child: Text(
+                message,
+                style: GoogleFonts.staatliches(fontSize: 16, color: Color.fromARGB(255, 19, 50, 49)),
+                softWrap: true,
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 11,
-                    right: 13,
-                  ),
-                  child: Container(height: 5, decoration: BoxDecoration(border: Border.all(color: Color.fromARGB(255, 16, 44, 43), width: 2), borderRadius: BorderRadius.circular(10), color: Color.fromARGB(255, 16, 44, 43)), child: Text("")),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Image.asset(
+                  'assets/icons/logo.png',
+                  width: 150,
+                  height: 150,
                 ),
-              )
-            ],
-          )
-        ])
-      ],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 11,
+                      right: 13,
+                    ),
+                    child: Container(height: 5, decoration: BoxDecoration(border: Border.all(color: Color.fromARGB(255, 16, 44, 43), width: 2), borderRadius: BorderRadius.circular(10), color: Color.fromARGB(255, 16, 44, 43)), child: Text("")),
+                  ),
+                )
+              ],
+            )
+          ])
+        ],
+      ),
     );
   }
 

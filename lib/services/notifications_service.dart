@@ -5,10 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/dialogs/loading_dialog.dart';
 import 'package:travel_guard/dialogs/destination_reached_dialog.dart';
+import 'package:travel_guard/main.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 Future<String> getApiKey() async {
   final remoteConfig = FirebaseRemoteConfig.instance;
@@ -26,12 +28,7 @@ Future<String> getApiKey() async {
 }
 
 Future<Map<String, dynamic>> doFetching() async {
-  BuildContext? currentContext = AppGlobal.navigatorKey.currentState?.context;
-
-  if (currentContext == null || !currentContext.mounted) {
-    debugPrint("Context is not valid. Skipping fetching.");
-    return {};
-  }
+  BuildContext? currentContext = AppGlobal.navigatorKey.currentState!.context;
 
   final mapState = Provider.of<MapState>(currentContext, listen: false);
   final apiKey = await getApiKey();
@@ -65,49 +62,44 @@ Future<Map<String, dynamic>> doFetching() async {
 }
 
 void onDidRecieveNotifacation(NotificationResponse notificationResponse) async {
+  BuildContext? currentContext = AppGlobal.navigatorKey.currentState!.context;
+
   if (FirebaseAuth.instance.currentUser == null) {
     return;
   }
-
-  BuildContext? currentContext = AppGlobal.navigatorKey.currentState?.context;
-
-  if (currentContext == null || !currentContext.mounted) {
-    debugPrint("Context is not valid. Skipping notification action.");
+  if (Provider.of<MapState>(currentContext!, listen: false).customMarker == null) {
+    CustomScaffoldMessenger.show(currentContext, "You are not longer in the area!", const Color.fromARGB(255, 47, 1, 1));
     return;
   }
 
   final mapState = Provider.of<MapState>(currentContext, listen: false);
   mapState.setSendNotifications(false);
 
-  Future.delayed(Duration.zero, () {
-    if (currentContext.mounted) {
-      showDialog(
-        context: currentContext,
-        barrierDismissible: false,
-        builder: (context) {
-          return LoadingDialog(message: 'Getting the current location...');
-        },
-      );
-    }
-  });
+  showDialog(
+    context: currentContext,
+    barrierDismissible: false,
+    builder: (context) {
+      return LoadingDialog(message: 'Getting the current location...');
+    },
+  );
 
   doFetching().then((value) {
     if (value.isNotEmpty) {
       final String startinLocation = value['startinAdress'];
       final String endinLocation = value['endinAdress'];
-
       if (currentContext.mounted) {
         Navigator.pop(currentContext);
-        showDialog(
-          context: currentContext,
-          builder: (context) {
-            return DestinationReachedDialog(
-              startinLocation: startinLocation,
-              endinLocation: endinLocation,
-            );
-          },
-        );
       }
+
+      showDialog(
+        context: currentContext,
+        builder: (context) {
+          return DestinationReachedDialog(
+            startinLocation: startinLocation,
+            endinLocation: endinLocation,
+          );
+        },
+      );
     } else {
       debugPrint('Error fetching data');
       MapState.resetConfig();

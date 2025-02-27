@@ -19,7 +19,7 @@ class NavIcon extends StatelessWidget {
             icon: Icon(icon),
             color: Color.fromARGB(255, 14, 37, 36),
             onPressed: () {
-              isActive ? null : Navigator.pushNamed(context, page);
+              isActive ? null : Navigator.pushReplacementNamed(context, page);
             },
           ),
         ),

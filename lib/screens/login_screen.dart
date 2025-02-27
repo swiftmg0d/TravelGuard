@@ -86,7 +86,7 @@ class LoginWidget extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 80),
+                const SizedBox(height: 90),
                 Input(
                   label: "Email",
                   hint: "tg@example.com",

@@ -11,6 +11,7 @@ class MapState extends ChangeNotifier {
   bool isLoaded = false;
   bool inRadius = false;
   bool sendNotifications = true;
+  bool needsRefresh = false;
   CustomMarker? customMarker;
   MapController controller = MapController.withUserPosition(
       trackUserLocation: UserTrackingOption(
@@ -52,40 +53,32 @@ class MapState extends ChangeNotifier {
   }
 
   static Future<void> handleDeleting(String message) async {
-    final currentContext = AppGlobal.navigatorKey.currentState?.context;
-
-    if (currentContext == null || !currentContext.mounted) {
-      debugPrint("Context is not valid. Skipping delete operation.");
-      return;
-    }
+    final currentContext = AppGlobal.navigatorKey.currentState!.context;
 
     final mapState = Provider.of<MapState>(currentContext, listen: false);
 
-    Future.delayed(Duration.zero, () {
-      if (currentContext.mounted) {
-        showDialog(
-          context: currentContext,
-          builder: (context) => LoadingDialog(message: message),
-        );
-      }
-    });
+    showDialog(
+      context: currentContext,
+      builder: (context) => LoadingDialog(message: message),
+    );
 
-    if (mapState.customMarker != null) {
-      final geoPoint = mapState.customMarker!.centarPoint;
+    final geoPoint = mapState.customMarker!.centarPoint;
 
-      await MarkersService.removeMarker(
-        CustomGeopoint(latitude: geoPoint.latitude, longitude: geoPoint.longitude),
-      );
+    await MarkersService.removeMarker(
+      CustomGeopoint(latitude: geoPoint.latitude, longitude: geoPoint.longitude),
+    );
 
-      await mapState.controller.removeMarker(geoPoint.toGeoPoint());
-      await mapState.controller.removeCircle(geoPoint.toGeoPoint().toString());
+    await mapState.controller.removeMarker(geoPoint.toGeoPoint());
+    await mapState.controller.removeCircle(geoPoint.toGeoPoint().toString());
 
-      MapState.resetConfig();
+    MapState.resetConfig();
+    if (!currentContext.mounted) return;
+    Navigator.of(currentContext).popUntil((route) => route.isFirst);
+    Provider.of<MapState>(currentContext, listen: false).refreshMap();
+  }
 
-      if (currentContext.mounted) {
-        Navigator.pop(currentContext);
-        Navigator.pop(currentContext);
-      }
-    }
+  void refreshMap() {
+    needsRefresh = !needsRefresh;
+    notifyListeners();
   }
 }

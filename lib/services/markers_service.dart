@@ -38,31 +38,27 @@ class MarkersService {
             latitude: startingPosition.latitude,
             longitude: startingPosition.longitude,
           ),
+          created: DateTime.now(),
         ).toJson());
 
         await db.collection("users").doc(auth.currentUser!.uid).update({
           'markers': markers,
         });
 
-        Future.delayed(Duration.zero, () {
-          if (context.mounted) {
-            CustomScaffoldMessenger.show(
-              context,
-              'Marker successfully added!',
-              const Color.fromARGB(255, 1, 39, 6),
-            );
-          }
-        });
+        CustomScaffoldMessenger.show(
+          context,
+          'Marker successfully added!',
+          const Color.fromARGB(255, 1, 39, 6),
+        );
       }
     } catch (e) {
       debugPrint("Error adding marker: $e");
-      if (context.mounted) {
-        CustomScaffoldMessenger.show(
-          context,
-          'Error while adding marker!',
-          const Color.fromARGB(255, 47, 1, 1),
-        );
-      }
+
+      CustomScaffoldMessenger.show(
+        context,
+        'Error while adding marker!',
+        const Color.fromARGB(255, 47, 1, 1),
+      );
     }
   }
 
@@ -141,20 +137,10 @@ class MarkersService {
   }
 
   static Future<void> addMarkerHistory(MarkerHistory historyMarker) async {
-    BuildContext? context = AppGlobal.navigatorKey.currentState?.context;
-
-    if (context == null || !context.mounted) {
-      debugPrint("Context is not valid. Skipping history addition.");
-      return;
-    }
+    BuildContext? context = AppGlobal.navigatorKey.currentState!.context;
 
     FirebaseFirestore db = FirebaseFirestore.instance;
     FirebaseAuth auth = FirebaseAuth.instance;
-
-    if (auth.currentUser == null) {
-      debugPrint("No authenticated user, skipping marker history save.");
-      return;
-    }
 
     try {
       DocumentSnapshot doc = await db.collection("users").doc(auth.currentUser!.uid).get();
@@ -166,27 +152,21 @@ class MarkersService {
         'history': history,
       });
 
-      Future.delayed(Duration.zero, () {
-        if (context.mounted) {
-          CustomScaffoldMessenger.show(
-            context,
-            'Marker successfully added to history!',
-            const Color.fromARGB(255, 1, 39, 6),
-          );
-        }
-      });
+      CustomScaffoldMessenger.show(
+        context,
+        'Marker successfully added to history!',
+        const Color.fromARGB(255, 1, 39, 6),
+      );
     } catch (e) {
       debugPrint("Error adding marker history: $e");
 
-      Future.delayed(Duration.zero, () {
-        if (context.mounted) {
-          CustomScaffoldMessenger.show(
-            context,
-            'Error while adding marker to history!',
-            const Color.fromARGB(255, 40, 6, 6),
-          );
-        }
-      });
+      if (context.mounted) {
+        CustomScaffoldMessenger.show(
+          context,
+          'Error while adding marker to history!',
+          const Color.fromARGB(255, 40, 6, 6),
+        );
+      }
     }
   }
 }

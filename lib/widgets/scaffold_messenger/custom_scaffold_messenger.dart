@@ -8,6 +8,7 @@ class CustomScaffoldMessenger {
       SnackBar(
         width: 200,
         backgroundColor: backgroundColor,
+        duration: const Duration(milliseconds: 1500),
         content: Text(
           text,
           textAlign: TextAlign.center,

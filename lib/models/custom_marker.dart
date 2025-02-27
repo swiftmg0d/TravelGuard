@@ -6,11 +6,15 @@ class CustomMarker {
   final CustomGeopoint centarPoint;
   final double radius;
   final Status status = Status.created;
-  final DateTime created = DateTime.now();
+  final DateTime created;
   final CustomGeopoint startingPosition;
 
-  CustomMarker({required this.centarPoint, required this.radius, required this.startingPosition});
-
+  CustomMarker({
+    required this.centarPoint,
+    required this.radius,
+    required this.startingPosition,
+    DateTime? created,
+  }) : created = created ?? DateTime.now();
   Map<String, dynamic> toJson() {
     return {
       'centarPoint': centarPoint.toJson(),
@@ -26,6 +30,7 @@ class CustomMarker {
       centarPoint: CustomGeopoint.fromMap(marker['centarPoint']),
       radius: (marker['radius'] as num).toDouble(),
       startingPosition: CustomGeopoint.fromMap(marker['startingPosition']),
+      created: DateTime.parse(marker['created']),
     );
   }
 
@@ -33,8 +38,13 @@ class CustomMarker {
     return Geolocator.distanceBetween(centarPoint.latitude, centarPoint.longitude, startingPosition.latitude, startingPosition.longitude);
   }
 
-  static int timeFromTo(DateTime from, DateTime to) {
-    final diffrence = to.difference(from).abs();
-    return diffrence.inHours;
+  static String timeFromTo(DateTime created, DateTime finished) {
+    Duration difference = finished.difference(created);
+
+    int differenceInMinutes = difference.inMinutes.abs();
+    int diffrenceInHours = difference.inHours.abs();
+    final output = diffrenceInHours == 0 ? "${differenceInMinutes} min" : "${diffrenceInHours} h ${differenceInMinutes} min";
+
+    return output;
   }
 }

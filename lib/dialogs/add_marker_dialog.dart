@@ -60,7 +60,7 @@ class _AddMarkerDialogState extends State<AddMarkerDialog> {
             ),
           ),
           Container(
-            padding: EdgeInsets.only(top: 250),
+            padding: EdgeInsets.only(top: 260),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

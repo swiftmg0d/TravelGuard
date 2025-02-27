@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travel_guard/models/custom_marker.dart';
 import 'package:travel_guard/widgets/home/bottom_navigation_bar.dart';
 import 'package:travel_guard/widgets/home/logo_app_bar.dart';
 
@@ -66,7 +67,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                     style: GoogleFonts.staatliches(color: Colors.white, fontSize: 16),
                                   ),
                                   Text(
-                                    "${historyItem['duration']} min",
+                                    timeFromTo(DateTime.parse(historyItem['started']), DateTime.parse(historyItem['finished'])),
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ],
@@ -114,6 +115,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
 getDistance(historyItem) {
   return historyItem > 1000 ? "${(historyItem / 1000).toStringAsFixed(2)} km" : "${historyItem.toStringAsFixed(2)} m";
+}
+
+String timeFromTo(DateTime created, DateTime finished) {
+  Duration difference = finished.difference(created);
+
+  int differenceInMinutes = difference.inMinutes.abs();
+  int diffrenceInHours = difference.inHours.abs();
+  final output = diffrenceInHours == 0 ? "${differenceInMinutes} min" : "${diffrenceInHours} h ${differenceInMinutes} min";
+
+  return output;
 }
 
 class EmptyHistoryWIdget extends StatelessWidget {

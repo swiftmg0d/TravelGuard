@@ -66,6 +66,7 @@ class SplashWidget extends StatelessWidget {
           children: <Widget>[
             SizedBox(height: 150),
             Logo(width: 320, height: 270),
+            SizedBox(height: 50),
             _isLoaded ? Button(screen: '/login', text: "Start the journey") : Loading(),
             SizedBox(height: 40),
             AnimatedMessages(currentIndex: _currentIndex, isLoaded: _isLoaded),

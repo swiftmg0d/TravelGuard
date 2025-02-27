@@ -4,7 +4,7 @@ class MarkerHistory {
   final DateTime started;
   final DateTime finished;
   final double distance;
-  final int duration;
+  final String duration;
 
   MarkerHistory({required this.startingAddress, required this.destinationAddress, required this.started, required this.finished, required this.distance, required this.duration});
 
@@ -15,7 +15,7 @@ class MarkerHistory {
       started: DateTime.parse(map['started']),
       finished: DateTime.parse(map['finished']),
       distance: (map['distance'] as num).toDouble(),
-      duration: map['duration'] as int,
+      duration: map['duration'],
     );
   }
 
