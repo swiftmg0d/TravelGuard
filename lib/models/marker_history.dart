@@ -5,8 +5,10 @@ class MarkerHistory {
   final DateTime finished;
   final double distance;
   final String duration;
+  final String? startingImage;
+  final String? endingImage;
 
-  MarkerHistory({required this.startingAddress, required this.destinationAddress, required this.started, required this.finished, required this.distance, required this.duration});
+  MarkerHistory({required this.startingAddress, required this.destinationAddress, required this.started, required this.finished, required this.distance, required this.duration, this.startingImage, this.endingImage});
 
   factory MarkerHistory.fromMap(Map<String, dynamic> map) {
     return MarkerHistory(
@@ -16,6 +18,8 @@ class MarkerHistory {
       finished: DateTime.parse(map['finished']),
       distance: (map['distance'] as num).toDouble(),
       duration: map['duration'],
+      startingImage: map['startingImage'],
+      endingImage: map['endingImage'],
     );
   }
 
@@ -27,6 +31,8 @@ class MarkerHistory {
       'finished': finished.toIso8601String(),
       'distance': distance,
       'duration': duration,
+      'startingImage': startingImage,
+      'endingImage': endingImage,
     };
   }
 }

@@ -9,8 +9,8 @@ import 'package:travel_guard/widgets/auth/login_button.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class LoginScreen extends StatefulWidget {
-  bool? created;
-  LoginScreen({super.key, this.created});
+  final bool? created;
+  const LoginScreen({super.key, this.created});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();

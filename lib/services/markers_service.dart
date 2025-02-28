@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/custom_marker.dart';
 import 'package:travel_guard/models/marker_history.dart';
+import 'package:travel_guard/state/images_state.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class MarkersService {
@@ -31,6 +33,8 @@ class MarkersService {
 
         final startingPosition = await Geolocator.getCurrentPosition();
 
+        if (!context.mounted) return;
+
         markers.add(CustomMarker(
           centarPoint: point,
           radius: radius,
@@ -39,11 +43,16 @@ class MarkersService {
             longitude: startingPosition.longitude,
           ),
           created: DateTime.now(),
+          startingImage: Provider.of<ImagesState>(context, listen: false).startingImagePath,
         ).toJson());
 
         await db.collection("users").doc(auth.currentUser!.uid).update({
           'markers': markers,
         });
+
+        if (!context.mounted) return;
+
+        Provider.of<ImagesState>(context, listen: false).setStartingImagePath("");
 
         CustomScaffoldMessenger.show(
           context,
@@ -151,6 +160,8 @@ class MarkersService {
       await db.collection("users").doc(auth.currentUser!.uid).update({
         'history': history,
       });
+
+      if (!context.mounted) return;
 
       CustomScaffoldMessenger.show(
         context,

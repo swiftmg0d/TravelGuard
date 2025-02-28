@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_guard/app_global.dart';
+import 'package:travel_guard/models/marker_history.dart';
 import 'package:travel_guard/screens/error_screen.dart';
+import 'package:travel_guard/screens/history_details_screen.dart';
 import 'package:travel_guard/screens/history_screen.dart';
 import 'package:travel_guard/screens/home_screen.dart';
 import 'package:travel_guard/screens/login_screen.dart';
@@ -11,11 +13,11 @@ import 'package:travel_guard/screens/register_screen.dart';
 import 'package:travel_guard/screens/splash_screen.dart';
 import 'package:travel_guard/services/notifications_service.dart';
 import 'package:travel_guard/state/conectivity_state.dart';
+import 'package:travel_guard/state/images_state.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -38,7 +40,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MapState()),
-        ChangeNotifierProvider(create: (_) => ConnectivityProvider())
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
+        ChangeNotifierProvider(create: (_) => ImagesState()),
       ],
       child: MainWidget(),
     );
@@ -78,6 +81,7 @@ Route<dynamic>? routeLogic(RouteSettings settings) {
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(builder: (context) => currentUser != null ? const HomeScreen() : const SplashScreen());
+
     case '/home':
       return MaterialPageRoute(builder: (context) => const HomeScreen());
     case '/login':
@@ -90,6 +94,8 @@ Route<dynamic>? routeLogic(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => settings.arguments != null ? ErrorScreen(screen: settings.arguments.toString()) : const ErrorScreen(screen: '/'));
     case '/splash':
       return CupertinoPageRoute(builder: (context) => const SplashScreen());
+    case '/history_details':
+      return MaterialPageRoute(builder: (context) => HistoryDetailsScreen(markerHistory: settings.arguments as MarkerHistory));
     default:
       return null;
   }

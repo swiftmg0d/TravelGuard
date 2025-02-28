@@ -8,11 +8,13 @@ class CustomMarker {
   final Status status = Status.created;
   final DateTime created;
   final CustomGeopoint startingPosition;
+  final String? startingImage;
 
   CustomMarker({
     required this.centarPoint,
     required this.radius,
     required this.startingPosition,
+    this.startingImage,
     DateTime? created,
   }) : created = created ?? DateTime.now();
   Map<String, dynamic> toJson() {
@@ -22,6 +24,7 @@ class CustomMarker {
       'status': status.toString().split('.').last,
       'created': created.toIso8601String(),
       'startingPosition': startingPosition.toJson(),
+      'startingImage': startingImage,
     };
   }
 
@@ -31,6 +34,7 @@ class CustomMarker {
       radius: (marker['radius'] as num).toDouble(),
       startingPosition: CustomGeopoint.fromMap(marker['startingPosition']),
       created: DateTime.parse(marker['created']),
+      startingImage: marker['startingImage'],
     );
   }
 
@@ -43,7 +47,7 @@ class CustomMarker {
 
     int differenceInMinutes = difference.inMinutes.abs();
     int diffrenceInHours = difference.inHours.abs();
-    final output = diffrenceInHours == 0 ? "${differenceInMinutes} min" : "${diffrenceInHours} h ${differenceInMinutes} min";
+    final output = diffrenceInHours == 0 ? "$differenceInMinutes min" : "$diffrenceInHours h $differenceInMinutes min";
 
     return output;
   }

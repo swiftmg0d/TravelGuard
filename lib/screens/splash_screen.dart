@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
         Navigator.pushNamed(context, '/error', arguments: '/splash');
       }

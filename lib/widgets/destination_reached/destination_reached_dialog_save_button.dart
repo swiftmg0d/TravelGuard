@@ -5,6 +5,7 @@ import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/models/custom_marker.dart';
 import 'package:travel_guard/models/marker_history.dart';
 import 'package:travel_guard/services/markers_service.dart';
+import 'package:travel_guard/state/images_state.dart';
 import 'package:travel_guard/state/map_state.dart';
 
 class DestinationReachedDialogSaveButton extends StatelessWidget {
@@ -52,9 +53,22 @@ class DestinationReachedDialogSaveButton extends StatelessWidget {
     if (mapState.customMarker != null) {
       final targetMarker = mapState.customMarker!;
 
-      final historyMarker = MarkerHistory(startingAddress: startingAddress, destinationAddress: destinationAddress, started: mapState.customMarker!.created, finished: DateTime.now(), distance: targetMarker.distance(), duration: CustomMarker.timeFromTo(targetMarker.created, started));
+      final historyMarker = MarkerHistory(
+        startingAddress: startingAddress,
+        destinationAddress: destinationAddress,
+        started: mapState.customMarker!.created,
+        finished: DateTime.now(),
+        distance: targetMarker.distance(),
+        duration: CustomMarker.timeFromTo(targetMarker.created, started),
+        startingImage: mapState.customMarker!.startingImage,
+        endingImage: Provider.of<ImagesState>(currentContext, listen: false).endingImagePath,
+      );
       debugPrint("Saving marker: ${historyMarker.toJson()}");
       await MarkersService.addMarkerHistory(historyMarker);
+
+      if (!currentContext.mounted) return;
+      Provider.of<ImagesState>(currentContext, listen: false).setStartingImagePath("");
+      Provider.of<ImagesState>(currentContext, listen: false).setEndingImagePath("");
 
       MapState.handleDeleting("Saving marker to history...");
 

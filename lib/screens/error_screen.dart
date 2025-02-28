@@ -4,7 +4,6 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_guard/state/conectivity_state.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
-import 'package:travel_guard/widgets/splash/button.dart';
 
 class ErrorScreen extends StatefulWidget {
   final String screen;

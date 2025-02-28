@@ -110,6 +110,7 @@ class AddMarkerDialogConfirmButton extends StatelessWidget {
         );
 
         if (!context.mounted) return;
+
         Navigator.of(context).popUntil((route) => route.isFirst);
         Provider.of<MapState>(context, listen: false).refreshMap();
 

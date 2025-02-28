@@ -9,8 +9,8 @@ class DestinationReachedDialoglogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 15, right: 20),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 15, right: 20),
         child: SizedBox(
             height: 220,
             width: 200,

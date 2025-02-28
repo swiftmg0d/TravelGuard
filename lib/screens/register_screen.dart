@@ -22,7 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
         Navigator.pushNamed(context, '/error', arguments: '/register');
       }

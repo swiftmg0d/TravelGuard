@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/dialogs/loading_dialog.dart';
 import 'package:travel_guard/dialogs/destination_reached_dialog.dart';
-import 'package:travel_guard/main.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -67,7 +66,7 @@ void onDidRecieveNotifacation(NotificationResponse notificationResponse) async {
   if (FirebaseAuth.instance.currentUser == null) {
     return;
   }
-  if (Provider.of<MapState>(currentContext!, listen: false).customMarker == null) {
+  if (Provider.of<MapState>(currentContext, listen: false).customMarker == null) {
     CustomScaffoldMessenger.show(currentContext, "You are not longer in the area!", const Color.fromARGB(255, 47, 1, 1));
     return;
   }
@@ -90,6 +89,7 @@ void onDidRecieveNotifacation(NotificationResponse notificationResponse) async {
       if (currentContext.mounted) {
         Navigator.pop(currentContext);
       }
+      if (!currentContext.mounted) return;
 
       showDialog(
         context: currentContext,

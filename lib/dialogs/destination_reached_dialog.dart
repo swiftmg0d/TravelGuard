@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:travel_guard/state/images_state.dart';
 import 'package:travel_guard/state/map_state.dart';
 import 'package:travel_guard/widgets/destination_reached/destination_reached_dialog_delete_button.dart';
 import 'package:travel_guard/widgets/destination_reached/destination_reached_dialog_logo.dart';
@@ -43,7 +48,7 @@ class _DestinationReachedDialogState extends State<DestinationReachedDialog> {
               fontWeight: FontWeight.bold,
             )),
         content: SizedBox(
-          height: 400,
+          height: 480,
           child: Stack(children: [
             DestinationReachedDialoglogo(),
             Column(mainAxisSize: MainAxisSize.min, children: [
@@ -54,7 +59,29 @@ class _DestinationReachedDialogState extends State<DestinationReachedDialog> {
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                   )),
-              SizedBox(height: 260),
+              SizedBox(height: 290),
+              Center(
+                child: Container(
+                    alignment: Alignment.center,
+                    width: 100,
+                    height: 50,
+                    child: TextButton(
+                        onPressed: () async {
+                          debugPrint("Add photo");
+                          final image = await _pickImageFromCamera();
+                          final imagePath = image ?? "";
+                          if (!context.mounted) return;
+
+                          Provider.of<ImagesState>(context, listen: false).setEndingImagePath(imagePath);
+                        },
+                        child: Text(
+                          "Add photo",
+                          style: GoogleFonts.staatliches(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ))),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -72,4 +99,11 @@ class _DestinationReachedDialogState extends State<DestinationReachedDialog> {
       ),
     );
   }
+}
+
+Future<String?> _pickImageFromCamera() async {
+  final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+  if (pickedFile == null) return null;
+  String encodedImageString = base64.encode(File(pickedFile.path).readAsBytesSync().toList());
+  return encodedImageString;
 }
