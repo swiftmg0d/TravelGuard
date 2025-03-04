@@ -1,6 +1,6 @@
 # TravelGuard - Your Travel Companion
 
-<video controls src="assets/video/preview.mp4" title="Title" autoplay loop muted ></video>
+<video controls src="https://raw.githubusercontent.com/swiftmg0d/TravelGuard/master/assets/video/preview.mp4" autoplay loop muted></video>
 
 ## Table of Contents
 
