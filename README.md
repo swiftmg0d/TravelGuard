@@ -1,9 +1,6 @@
 # TravelGuard - Your Travel Companion
 
-<video  controls autoplay loop muted>
-  <source src="https://github.com/user-attachments/assets/262d3ff1-10e7-40da-a570-5161fd86893f" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+https://github.com/user-attachments/assets/d6cb01be-1635-41a2-9a9a-a5cb474f4e0b
 
 ## Table of Contents
 
