@@ -91,7 +91,7 @@ Once everything is set up, the app should run locally on your mobile device/emul
 - **GPS Integration**: Accurate location tracking for users using `geolocator` and `location`.
 - **Push Notifications**: Alerts when the user is near a marker using `flutter_local_notifications`.
 - **Vibration Alerts**: Customizable alerts via vibrations.
-- **Map Integration**: Google Maps or OpenStreetMap integration using `flutter_map` and `flutter_osm_plugin` to display markers and user location.
+- **Map Integration**:  OpenStreetMap integration using `flutter_map` and `flutter_osm_plugin` to display markers and user location.
 - **User Interface**: Simple and intuitive interface for placing markers and setting distances.
 - **Camera Integration**: Capturing images of the start and final positions using `camera` and storing them via `firebase_storage`.
 - **Statistics**: Displays trip stats like duration, speed, and distance.
