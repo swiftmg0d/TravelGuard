@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:travel_guard/services/markers_service.dart';
 import 'package:travel_guard/services/notifications_service.dart';
 import 'package:travel_guard/providers/map_provider.dart';
+import 'package:vibration/vibration.dart';
 
 class MapUtils {
   static void checkRadiusUpdate(
@@ -34,6 +35,7 @@ class MapUtils {
     }
 
     if (mapState.inRadius && mapState.customMarker != null) {
+      Vibration.vibrate(duration: 1000);
       NotificationsService().showNotification(
         title: title,
         body: body,
