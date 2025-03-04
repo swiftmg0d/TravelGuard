@@ -12,14 +12,15 @@ import 'package:travel_guard/screens/login_screen.dart';
 import 'package:travel_guard/screens/register_screen.dart';
 import 'package:travel_guard/screens/splash_screen.dart';
 import 'package:travel_guard/services/notifications_service.dart';
-import 'package:travel_guard/state/conectivity_state.dart';
-import 'package:travel_guard/state/images_state.dart';
-import 'package:travel_guard/state/map_state.dart';
+import 'package:travel_guard/providers/conectivity_provider.dart';
+import 'package:travel_guard/providers/image_provider.dart';
+import 'package:travel_guard/providers/map_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/cupertino.dart';
 
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,8 +41,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MapState()),
-        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
-        ChangeNotifierProvider(create: (_) => ImagesState()),
+        ChangeNotifierProvider(create: (_) => ConnectivityState()),
+        ChangeNotifierProvider(create: (_) => ImageState()),
       ],
       child: MainWidget(),
     );
@@ -65,7 +66,8 @@ class _MainWidgetState extends State<MainWidget> {
       navigatorKey: AppGlobal.navigatorKey,
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 255, 255, 255)),
         useMaterial3: true,
       ),
       initialRoute: '/',
@@ -80,22 +82,32 @@ Route<dynamic>? routeLogic(RouteSettings settings) {
   final currentUser = FirebaseAuth.instance.currentUser;
   switch (settings.name) {
     case '/':
-      return MaterialPageRoute(builder: (context) => currentUser != null ? const HomeScreen() : const SplashScreen());
+      return MaterialPageRoute(
+          builder: (context) =>
+              currentUser != null ? const HomeScreen() : const SplashScreen());
 
     case '/home':
       return MaterialPageRoute(builder: (context) => const HomeScreen());
     case '/login':
-      return CupertinoPageRoute(builder: (context) => settings.arguments != null ? LoginScreen(created: settings.arguments as bool) : LoginScreen());
+      return CupertinoPageRoute(
+          builder: (context) => settings.arguments != null
+              ? LoginScreen(created: settings.arguments as bool)
+              : LoginScreen());
     case '/register':
       return CupertinoPageRoute(builder: (context) => const RegisterScreen());
     case '/history':
       return MaterialPageRoute(builder: (context) => const HistoryScreen());
     case '/error':
-      return MaterialPageRoute(builder: (context) => settings.arguments != null ? ErrorScreen(screen: settings.arguments.toString()) : const ErrorScreen(screen: '/'));
+      return MaterialPageRoute(
+          builder: (context) => settings.arguments != null
+              ? ErrorScreen(screen: settings.arguments.toString())
+              : const ErrorScreen(screen: '/'));
     case '/splash':
       return CupertinoPageRoute(builder: (context) => const SplashScreen());
     case '/history_details':
-      return MaterialPageRoute(builder: (context) => HistoryDetailsScreen(markerHistory: settings.arguments as MarkerHistory));
+      return MaterialPageRoute(
+          builder: (context) => HistoryDetailsScreen(
+              markerHistory: settings.arguments as MarkerHistory));
     default:
       return null;
   }

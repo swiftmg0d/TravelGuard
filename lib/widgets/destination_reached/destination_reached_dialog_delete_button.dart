@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/state/map_state.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_guard/providers/image_provider.dart';
+import 'package:travel_guard/providers/map_provider.dart';
 
 class DestinationReachedDialogDeleteButton extends StatelessWidget {
   const DestinationReachedDialogDeleteButton({
@@ -11,6 +13,9 @@ class DestinationReachedDialogDeleteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () async {
+        final imagesState = Provider.of<ImageState>(context, listen: false);
+        imagesState.setEndingImagePath("");
+        imagesState.setStartingImagePath("");
         await MapState.handleDeleting("Deleting...");
       },
       child: Container(

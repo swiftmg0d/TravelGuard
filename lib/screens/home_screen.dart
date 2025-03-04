@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_guard/screens/map_screen.dart';
-import 'package:travel_guard/state/conectivity_state.dart';
-import 'package:travel_guard/state/map_state.dart';
-import 'package:travel_guard/widgets/home/logo_app_bar.dart';
-import 'package:travel_guard/widgets/home/bottom_navigation_bar.dart';
+import 'package:travel_guard/providers/conectivity_provider.dart';
+import 'package:travel_guard/providers/map_provider.dart';
+import 'package:travel_guard/widgets/home/home_logo_app_bar.dart';
+import 'package:travel_guard/widgets/home/home_bottom_navigation_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
+      if (Provider.of<ConnectivityState>(context, listen: false).getStatus() ==
+          false) {
         Navigator.pushNamed(context, '/error', arguments: '/home');
       }
       final mapState = Provider.of<MapState>(context, listen: false);
@@ -41,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           MapScreen(),
           if (mapState.isLoaded) ...[
-            LogoAppBar(),
-            BottomNavBar(
+            HomeLogoAppBar(),
+            HomeBottomNavBar(
               active: 1,
             ),
           ],

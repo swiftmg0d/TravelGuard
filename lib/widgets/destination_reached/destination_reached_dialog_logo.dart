@@ -10,7 +10,7 @@ class DestinationReachedDialoglogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15, right: 20),
+        margin: const EdgeInsets.only(top: 10, right: 20),
         child: SizedBox(
             height: 220,
             width: 200,

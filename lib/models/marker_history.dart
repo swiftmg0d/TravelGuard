@@ -8,7 +8,15 @@ class MarkerHistory {
   final String? startingImage;
   final String? endingImage;
 
-  MarkerHistory({required this.startingAddress, required this.destinationAddress, required this.started, required this.finished, required this.distance, required this.duration, this.startingImage, this.endingImage});
+  MarkerHistory(
+      {required this.startingAddress,
+      required this.destinationAddress,
+      required this.started,
+      required this.finished,
+      required this.distance,
+      required this.duration,
+      this.startingImage,
+      this.endingImage});
 
   factory MarkerHistory.fromMap(Map<String, dynamic> map) {
     return MarkerHistory(

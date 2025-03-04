@@ -7,11 +7,12 @@ import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/models/custom_geopoint.dart';
 import 'package:travel_guard/models/custom_marker.dart';
 import 'package:travel_guard/models/marker_history.dart';
-import 'package:travel_guard/state/images_state.dart';
+import 'package:travel_guard/providers/image_provider.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class MarkersService {
-  static Future<void> addMarker({required CustomGeopoint point, required double radius}) async {
+  static Future<void> addMarker(
+      {required CustomGeopoint point, required double radius}) async {
     BuildContext? context = AppGlobal.navigatorKey.currentState?.context;
 
     if (context == null || !context.mounted) {
@@ -24,10 +25,12 @@ class MarkersService {
       FirebaseAuth auth = FirebaseAuth.instance;
 
       if (auth.currentUser != null) {
-        DocumentReference ref = db.collection("users").doc(auth.currentUser!.uid);
+        DocumentReference ref =
+            db.collection("users").doc(auth.currentUser!.uid);
         DocumentSnapshot snapshot = await ref.get();
 
-        List<dynamic> markers = (snapshot.data() as Map<String, dynamic>?)?['markers'] ?? [];
+        List<dynamic> markers =
+            (snapshot.data() as Map<String, dynamic>?)?['markers'] ?? [];
 
         debugPrint("Markers length: ${markers.length}");
 
@@ -43,7 +46,8 @@ class MarkersService {
             longitude: startingPosition.longitude,
           ),
           created: DateTime.now(),
-          startingImage: Provider.of<ImagesState>(context, listen: false).startingImagePath,
+          startingImage:
+              Provider.of<ImageState>(context, listen: false).startingImagePath,
         ).toJson());
 
         await db.collection("users").doc(auth.currentUser!.uid).update({
@@ -52,7 +56,8 @@ class MarkersService {
 
         if (!context.mounted) return;
 
-        Provider.of<ImagesState>(context, listen: false).setStartingImagePath("");
+        Provider.of<ImageState>(context, listen: false)
+            .setStartingImagePath("");
 
         CustomScaffoldMessenger.show(
           context,
@@ -89,11 +94,14 @@ class MarkersService {
         return [];
       }
 
-      List<dynamic> rawMarkers = (snapshot.data() as Map<String, dynamic>?)?['markers'] ?? [];
+      List<dynamic> rawMarkers =
+          (snapshot.data() as Map<String, dynamic>?)?['markers'] ?? [];
 
       debugPrint("Raw markers length: ${rawMarkers.length}");
 
-      return rawMarkers.map((marker) => CustomMarker.fromMap(marker as Map<String, dynamic>)).toList();
+      return rawMarkers
+          .map((marker) => CustomMarker.fromMap(marker as Map<String, dynamic>))
+          .toList();
     } catch (e) {
       debugPrint("Error fetching markers: $e");
       return [];
@@ -106,7 +114,8 @@ class MarkersService {
 
     if (auth.currentUser != null) {
       try {
-        DocumentSnapshot doc = await db.collection("users").doc(auth.currentUser!.uid).get();
+        DocumentSnapshot doc =
+            await db.collection("users").doc(auth.currentUser!.uid).get();
 
         if (doc.exists) {
           List<dynamic> markers = doc['markers'];
@@ -114,7 +123,8 @@ class MarkersService {
           markers.removeWhere((marker) {
             final lat = (marker['centarPoint']['latitude'] as num).toDouble();
             final long = (marker['centarPoint']['longitude'] as num).toDouble();
-            return lat == customMarker.latitude && long == customMarker.longitude;
+            return lat == customMarker.latitude &&
+                long == customMarker.longitude;
           });
 
           await db.collection("users").doc(auth.currentUser!.uid).update({
@@ -132,7 +142,8 @@ class MarkersService {
     }
   }
 
-  static Future<bool> checkIfDistanceIsValid(CustomGeopoint value, int distance) async {
+  static Future<bool> checkIfDistanceIsValid(
+      CustomGeopoint value, int distance) async {
     final markers = await getMarkers();
     return markers.every((marker) {
       return Geolocator.distanceBetween(
@@ -152,8 +163,13 @@ class MarkersService {
     FirebaseAuth auth = FirebaseAuth.instance;
 
     try {
-      DocumentSnapshot doc = await db.collection("users").doc(auth.currentUser!.uid).get();
-      List<dynamic> history = (doc.exists && doc.data() != null && (doc.data() as Map<String, dynamic>).containsKey('history')) ? List.from(doc['history']) : [];
+      DocumentSnapshot doc =
+          await db.collection("users").doc(auth.currentUser!.uid).get();
+      List<dynamic> history = (doc.exists &&
+              doc.data() != null &&
+              (doc.data() as Map<String, dynamic>).containsKey('history'))
+          ? List.from(doc['history'])
+          : [];
 
       history.add(historyMarker.toJson());
 

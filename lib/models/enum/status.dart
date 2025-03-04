@@ -1,4 +1,1 @@
-enum Status {
-  created,
-  finished
-}
+enum Status { created, finished }

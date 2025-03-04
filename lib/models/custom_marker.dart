@@ -39,15 +39,20 @@ class CustomMarker {
   }
 
   double distance() {
-    return Geolocator.distanceBetween(centarPoint.latitude, centarPoint.longitude, startingPosition.latitude, startingPosition.longitude);
+    return Geolocator.distanceBetween(
+        centarPoint.latitude,
+        centarPoint.longitude,
+        startingPosition.latitude,
+        startingPosition.longitude);
   }
 
   static String timeFromTo(DateTime created, DateTime finished) {
     Duration difference = finished.difference(created);
-
     int differenceInMinutes = difference.inMinutes.abs();
     int diffrenceInHours = difference.inHours.abs();
-    final output = diffrenceInHours == 0 ? "$differenceInMinutes min" : "$diffrenceInHours h $differenceInMinutes min";
+    final output = diffrenceInHours == 0
+        ? "$differenceInMinutes min"
+        : "$diffrenceInHours h $differenceInMinutes min";
 
     return output;
   }

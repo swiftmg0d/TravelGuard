@@ -32,7 +32,8 @@ class _RemoveMarkerDialogState extends State<RemoveMarkerDialog> {
             width: 100,
             padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
             decoration: BoxDecoration(
-              border: Border.all(color: Color.fromARGB(255, 16, 44, 43), width: 2),
+              border:
+                  Border.all(color: Color.fromARGB(255, 16, 44, 43), width: 2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
@@ -55,7 +56,8 @@ class _RemoveMarkerDialogState extends State<RemoveMarkerDialog> {
             padding: EdgeInsets.symmetric(vertical: 3, horizontal: 20),
             decoration: BoxDecoration(
               color: Color.fromARGB(255, 18, 68, 64),
-              border: Border.all(color: Color.fromARGB(255, 16, 44, 43), width: 2),
+              border:
+                  Border.all(color: Color.fromARGB(255, 16, 44, 43), width: 2),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(

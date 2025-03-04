@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_guard/state/conectivity_state.dart';
-import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
-import 'package:travel_guard/widgets/auth/info_account.dart';
-import 'package:travel_guard/widgets/auth/input.dart';
-import 'package:travel_guard/widgets/auth/login_button.dart';
+import 'package:travel_guard/providers/conectivity_provider.dart';
+import 'package:travel_guard/widgets/auth/auth_custum_app_bar.dart';
+import 'package:travel_guard/widgets/auth/auth_info_account.dart';
+import 'package:travel_guard/widgets/auth/auth_input.dart';
+import 'package:travel_guard/widgets/auth/auth_login_button.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -30,7 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
           const Color.fromARGB(255, 1, 39, 6),
         );
       }
-      if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
+      if (Provider.of<ConnectivityState>(context, listen: false).getStatus() ==
+          false) {
         Navigator.pushNamed(context, '/error', arguments: '/login');
       }
     });
@@ -67,7 +68,9 @@ class LoginWidget extends StatelessWidget {
             child: Opacity(
               opacity: 0.1,
               child: Center(
-                child: Image.asset("assets/icons/logo.png", fit: BoxFit.contain, width: MediaQuery.of(context).size.width),
+                child: Image.asset("assets/icons/logo.png",
+                    fit: BoxFit.contain,
+                    width: MediaQuery.of(context).size.width),
               ),
             ),
           ),
@@ -80,7 +83,7 @@ class LoginWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                CustomAppBar(screen: '/splash'),
+                AuthCustomAppBar(screen: '/splash'),
                 const SizedBox(height: 80),
                 Text(
                   "Sign in to your account",
@@ -92,28 +95,28 @@ class LoginWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 90),
-                Input(
+                AuthInput(
                   label: "Email",
                   hint: "tg@example.com",
                   controler: _emailController,
                   obscureText: false,
                 ),
                 const SizedBox(height: 20),
-                Input(
+                AuthInput(
                   label: "Password",
                   hint: "strongpassword",
                   controler: _passwordController,
                   obscureText: true,
                 ),
                 const SizedBox(height: 70),
-                LoginButton(
+                AuthLoginButton(
                   emailController: _emailController,
                   passwordController: _passwordController,
                 ),
                 const SizedBox(height: 20),
-                InfoAccount(
-                  text1: "Don't have an account? ",
-                  text2: "Sign up",
+                AuthInfoAccount(
+                  title: "Don't have an account? ",
+                  subtitle: "Sign up",
                   screen: '/register',
                 ),
               ],

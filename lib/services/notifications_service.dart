@@ -5,32 +5,17 @@ import 'package:provider/provider.dart';
 import 'package:travel_guard/app_global.dart';
 import 'package:travel_guard/dialogs/loading_dialog.dart';
 import 'package:travel_guard/dialogs/destination_reached_dialog.dart';
-import 'package:travel_guard/state/map_state.dart';
+import 'package:travel_guard/providers/map_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:travel_guard/utils/api_utils.dart';
 import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
-
-Future<String> getApiKey() async {
-  final remoteConfig = FirebaseRemoteConfig.instance;
-
-  await remoteConfig.setConfigSettings(
-    RemoteConfigSettings(
-      fetchTimeout: Duration(seconds: 10),
-      minimumFetchInterval: Duration.zero,
-    ),
-  );
-
-  await remoteConfig.fetchAndActivate();
-
-  return remoteConfig.getString('geoCodeAPIKEY');
-}
 
 Future<Map<String, dynamic>> doFetching() async {
   BuildContext? currentContext = AppGlobal.navigatorKey.currentState!.context;
 
   final mapState = Provider.of<MapState>(currentContext, listen: false);
-  final apiKey = await getApiKey();
+  final apiKey = await ApiUtils.getApiKey("geoCodeAPIKEY");
 
   final geoPointStart = mapState.customMarker?.startingPosition;
   final geoPointEnd = mapState.customMarker?.centarPoint;
@@ -41,12 +26,19 @@ Future<Map<String, dynamic>> doFetching() async {
   }
 
   try {
-    final startinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointStart.latitude},${geoPointStart.longitude}&key=$apiKey'));
-    final endinGeoPointResponse = await http.get(Uri.parse('https://maps.googleapis.com/maps/api/geocode/json?latlng=${geoPointEnd.latitude},${geoPointEnd.longitude}&key=$apiKey'));
+    final uri = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
 
-    if (startinGeoPointResponse.statusCode == 200 && endinGeoPointResponse.statusCode == 200) {
-      final startinAdress = jsonDecode(startinGeoPointResponse.body)['results'][1]['formatted_address'];
-      final endinAdress = jsonDecode(endinGeoPointResponse.body)['results'][1]['formatted_address'];
+    final startinGeoPointResponse = await http.get(Uri.parse(
+        '$uri${geoPointStart.latitude},${geoPointStart.longitude}&key=$apiKey'));
+    final endinGeoPointResponse = await http.get(Uri.parse(
+        '$uri${geoPointEnd.latitude},${geoPointEnd.longitude}&key=$apiKey'));
+
+    if (startinGeoPointResponse.statusCode == 200 &&
+        endinGeoPointResponse.statusCode == 200) {
+      final startinAdress = jsonDecode(startinGeoPointResponse.body)['results']
+          [1]['formatted_address'];
+      final endinAdress = jsonDecode(endinGeoPointResponse.body)['results'][1]
+          ['formatted_address'];
 
       return {
         'startinAdress': startinAdress,
@@ -66,8 +58,10 @@ void onDidRecieveNotifacation(NotificationResponse notificationResponse) async {
   if (FirebaseAuth.instance.currentUser == null) {
     return;
   }
-  if (Provider.of<MapState>(currentContext, listen: false).customMarker == null) {
-    CustomScaffoldMessenger.show(currentContext, "You are not longer in the area!", const Color.fromARGB(255, 47, 1, 1));
+  if (Provider.of<MapState>(currentContext, listen: false).customMarker ==
+      null) {
+    CustomScaffoldMessenger.show(currentContext,
+        "You are not longer in the area!", const Color.fromARGB(255, 47, 1, 1));
     return;
   }
 
@@ -128,17 +122,26 @@ class NotificationsService {
       onDidReceiveNotificationResponse: onDidRecieveNotifacation,
     );
 
-    await notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
+    await notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
   }
 
   NotificationDetails notificationDetails() {
     return const NotificationDetails(
-      android: AndroidNotificationDetails('channel_id', 'channel_name', channelDescription: 'channel_description', importance: Importance.max, priority: Priority.high, color: Color.fromARGB(0, 255, 255, 255), sound: RawResourceAndroidNotificationSound('notification_sound')),
+      android: AndroidNotificationDetails('channel_id', 'channel_name',
+          channelDescription: 'channel_description',
+          importance: Importance.max,
+          priority: Priority.high,
+          color: Color.fromARGB(0, 255, 255, 255),
+          sound: RawResourceAndroidNotificationSound('notification_sound')),
       iOS: DarwinNotificationDetails(),
     );
   }
 
-  Future<void> showNotification({int id = 0, String? title, String? body}) async {
+  Future<void> showNotification(
+      {int id = 0, String? title, String? body}) async {
     await notificationsPlugin.show(
       id,
       title,

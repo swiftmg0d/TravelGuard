@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_guard/state/conectivity_state.dart';
-import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
-import 'package:travel_guard/widgets/auth/info_account.dart';
-import 'package:travel_guard/widgets/auth/input.dart';
-import 'package:travel_guard/widgets/auth/register_button.dart';
+import 'package:travel_guard/providers/conectivity_provider.dart';
+import 'package:travel_guard/widgets/auth/auth_custum_app_bar.dart';
+import 'package:travel_guard/widgets/auth/auth_info_account.dart';
+import 'package:travel_guard/widgets/auth/auth_input.dart';
+import 'package:travel_guard/widgets/auth/auth_register_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -17,13 +17,15 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (Provider.of<ConnectivityProvider>(context, listen: false).getStatus() == false) {
+      if (Provider.of<ConnectivityState>(context, listen: false).getStatus() ==
+          false) {
         Navigator.pushNamed(context, '/error', arguments: '/register');
       }
     });
@@ -57,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                CustomAppBar(screen: '/login'),
+                AuthCustomAppBar(screen: '/login'),
                 const SizedBox(height: 80),
                 Text(
                   "Create an account",
@@ -68,36 +70,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 90),
-                Input(
+                AuthInput(
                   label: "Email",
                   hint: "tg@example.com",
                   controler: _emailController,
                   obscureText: false,
                 ),
                 const SizedBox(height: 20),
-                Input(
+                AuthInput(
                   label: "Password",
                   hint: "strongpassword",
                   controler: _passwordController,
                   obscureText: true,
                 ),
                 const SizedBox(height: 20),
-                Input(
+                AuthInput(
                   label: "Confirm Password",
                   hint: "strongpassword",
                   controler: _confirmPasswordController,
                   obscureText: true,
                 ),
                 const SizedBox(height: 40),
-                RegisterButton(
+                AuthRegisterButton(
                   emailController: _emailController,
                   passwordController: _passwordController,
                   confirmPasswordController: _confirmPasswordController,
                 ),
                 const SizedBox(height: 20),
-                InfoAccount(
-                  text1: "Already have an account? ",
-                  text2: "Sign in",
+                AuthInfoAccount(
+                  title: "Already have an account? ",
+                  subtitle: "Sign in",
                   screen: '/login',
                 ),
               ],

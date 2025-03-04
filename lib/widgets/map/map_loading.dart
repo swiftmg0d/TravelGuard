@@ -43,7 +43,11 @@ class MapLoading extends StatelessWidget {
                 Transform(
                   transform: Matrix4.translationValues(205, 700, 1),
                   child: Container(
-                    child: Lottie.asset('assets/icons_json/a3.json', width: 600, height: 300, fit: BoxFit.contain, alignment: Alignment.topRight),
+                    child: Lottie.asset('assets/icons_json/a3.json',
+                        width: 600,
+                        height: 300,
+                        fit: BoxFit.contain,
+                        alignment: Alignment.topRight),
                   ),
                 ),
               ],
@@ -65,7 +69,8 @@ class BackgroundLogo extends StatelessWidget {
       child: Opacity(
         opacity: 0.1,
         child: Center(
-          child: Image.asset("assets/icons/logo.png", fit: BoxFit.contain, width: MediaQuery.of(context).size.width),
+          child: Image.asset("assets/icons/logo.png",
+              fit: BoxFit.contain, width: MediaQuery.of(context).size.width),
         ),
       ),
     );
