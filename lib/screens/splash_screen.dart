@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:travel_guard/utils/constants/messsages.dart';
-import 'package:travel_guard/screens/login_screen.dart';
-import 'package:travel_guard/widgets/splash/animated_messages.dart';
-import 'package:travel_guard/widgets/splash/button.dart';
-import 'package:travel_guard/widgets/splash/loading.dart';
-import 'package:travel_guard/widgets/splash/logo.dart';
-import 'package:travel_guard/widgets/splash/version.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_guard/providers/conectivity_provider.dart';
+import 'package:travel_guard/constants/messsages.dart';
+import 'package:travel_guard/widgets/splash/splash_animated_messages.dart';
+import 'package:travel_guard/widgets/splash/splash_button.dart';
+import 'package:travel_guard/widgets/splash/splash_loading.dart';
+import 'package:travel_guard/widgets/splash/splash_logo.dart';
+import 'package:travel_guard/widgets/splash/splash_version.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -24,6 +25,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Provider.of<ConnectivityState>(context, listen: false).getStatus() ==
+          false) {
+        Navigator.pushNamed(context, '/error', arguments: '/splash');
+      }
+    });
     startTimer();
   }
 
@@ -41,6 +48,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        body: SplashWidget(isLoaded: _isLoaded, currentIndex: _currentIndex));
+  }
+}
+
+class SplashWidget extends StatelessWidget {
+  const SplashWidget({
+    super.key,
+    required bool isLoaded,
+    required int currentIndex,
+  })  : _isLoaded = isLoaded,
+        _currentIndex = currentIndex;
+
+  final bool _isLoaded;
+  final int _currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -49,12 +74,16 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             SizedBox(height: 150),
-            Logo(width: 320, height: 270),
-            _isLoaded ? Button(screen: LoginScreen(), text: "Start the journey") : Loading(),
+            SplashLogo(width: 320, height: 270),
+            SizedBox(height: 50),
+            _isLoaded
+                ? SplashButton(screen: '/login', text: "Start the journey")
+                : SplashLoading(),
             SizedBox(height: 40),
-            AnimatedMessages(currentIndex: _currentIndex, isLoaded: _isLoaded),
+            SplashAnimatedMessages(
+                currentIndex: _currentIndex, isLoaded: _isLoaded),
             SizedBox(height: 135),
-            Version()
+            SplashVersion()
           ],
         ),
       ),

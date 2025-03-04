@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/screens/login_screen.dart';
-import 'package:travel_guard/utils/transitions/slide_out.dart';
+import 'package:travel_guard/services/auth_service.dart';
 
 class LogOutDialogConfirmButton extends StatelessWidget {
   const LogOutDialogConfirmButton({
@@ -12,7 +11,7 @@ class LogOutDialogConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Navigator.of(context).push(SlideOut(page: LoginScreen()));
+        AuthService.logOut(context);
       },
       child: Container(
         padding: EdgeInsets.only(top: 3, bottom: 3, left: 20, right: 20),

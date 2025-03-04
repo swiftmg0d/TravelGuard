@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "486854741507",
+    "project_id": "travel-guard-3bafb",
+    "storage_bucket": "travel-guard-3bafb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486854741507:android:b7c00c497695d9ef500836",
+        "android_client_info": {
+          "package_name": "com.example.travel_guard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSzDcR89CtTOnYvepr46pH_pwwSbkumc4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

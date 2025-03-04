@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:travel_guard/screens/register_screen.dart';
-import 'package:travel_guard/screens/splash_screen.dart';
-import 'package:travel_guard/widgets/auth/custum_app_bar.dart';
-import 'package:travel_guard/widgets/auth/info_account.dart';
-import 'package:travel_guard/widgets/auth/input.dart';
-import 'package:travel_guard/widgets/auth/login_button.dart';
+import 'package:provider/provider.dart';
+import 'package:travel_guard/providers/conectivity_provider.dart';
+import 'package:travel_guard/widgets/auth/auth_custum_app_bar.dart';
+import 'package:travel_guard/widgets/auth/auth_info_account.dart';
+import 'package:travel_guard/widgets/auth/auth_input.dart';
+import 'package:travel_guard/widgets/auth/auth_login_button.dart';
+import 'package:travel_guard/widgets/scaffold_messenger/custom_scaffold_messenger.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final bool? created;
+  const LoginScreen({super.key, this.created});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -17,6 +19,43 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.created != null && widget.created!) {
+        CustomScaffoldMessenger.show(
+          context,
+          'Account created successfully',
+          const Color.fromARGB(255, 1, 39, 6),
+        );
+      }
+      if (Provider.of<ConnectivityState>(context, listen: false).getStatus() ==
+          false) {
+        Navigator.pushNamed(context, '/error', arguments: '/login');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LoginWidget(
+      emailController: _emailController,
+      passwordController: _passwordController,
+    );
+  }
+}
+
+class LoginWidget extends StatelessWidget {
+  const LoginWidget({
+    super.key,
+    required TextEditingController emailController,
+    required TextEditingController passwordController,
+  })  : _emailController = emailController,
+        _passwordController = passwordController;
+
+  final TextEditingController _emailController;
+  final TextEditingController _passwordController;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Opacity(
               opacity: 0.1,
               child: Center(
-                child: Image.asset("assets/icons/logo.png", fit: BoxFit.contain, width: MediaQuery.of(context).size.width),
+                child: Image.asset("assets/icons/logo.png",
+                    fit: BoxFit.contain,
+                    width: MediaQuery.of(context).size.width),
               ),
             ),
           ),
@@ -42,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                CustomAppBar(screen: SplashScreen()),
+                AuthCustomAppBar(screen: '/splash'),
                 const SizedBox(height: 80),
                 Text(
                   "Sign in to your account",
@@ -53,30 +94,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 80),
-                Input(
+                const SizedBox(height: 90),
+                AuthInput(
                   label: "Email",
                   hint: "tg@example.com",
                   controler: _emailController,
                   obscureText: false,
                 ),
                 const SizedBox(height: 20),
-                Input(
+                AuthInput(
                   label: "Password",
                   hint: "strongpassword",
                   controler: _passwordController,
                   obscureText: true,
                 ),
                 const SizedBox(height: 70),
-                LoginButton(
+                AuthLoginButton(
                   emailController: _emailController,
                   passwordController: _passwordController,
                 ),
                 const SizedBox(height: 20),
-                InfoAccount(
-                  text1: "Don't have an account? ",
-                  text2: "Sign up",
-                  screen: RegisterScreen(),
+                AuthInfoAccount(
+                  title: "Don't have an account? ",
+                  subtitle: "Sign up",
+                  screen: '/register',
                 ),
               ],
             ),
