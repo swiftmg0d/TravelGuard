@@ -1,6 +1,6 @@
 # TravelGuard - Your Travel Companion
 
-https://github.com/user-attachments/assets/d6cb01be-1635-41a2-9a9a-a5cb474f4e0b
+[https://github.com/user-attachments/assets/d6cb01be-1635-41a2-9a9a-a5cb474f4e0b](https://github.com/user-attachments/assets/d6cb01be-1635-41a2-9a9a-a5cb474f4e0b)
 
 ## Table of Contents
 
@@ -91,7 +91,8 @@ Once everything is set up, the app should run locally on your mobile device/emul
 - **GPS Integration**: Accurate location tracking for users using `geolocator` and `location`.
 - **Push Notifications**: Alerts when the user is near a marker using `flutter_local_notifications`.
 - **Vibration Alerts**: Customizable alerts via vibrations.
-- **Map Integration**: Google Maps or OpenStreetMap integration using `flutter_map` and `flutter_osm_plugin` to display markers and user location.
+- **Map Integration**: OpenStreetMap integration using `flutter_map` and `flutter_osm_plugin` to display markers and user location.
+- **Google Geocoding API**: Converts addresses into geographic coordinates and vice versa.
 - **User Interface**: Simple and intuitive interface for placing markers and setting distances.
 - **Camera Integration**: Capturing images of the start and final positions using `camera` and storing them via `firebase_storage`.
 - **Statistics**: Displays trip stats like duration, speed, and distance.
@@ -99,3 +100,4 @@ Once everything is set up, the app should run locally on your mobile device/emul
 - **Animations**: Enhance UX with `lottie` and `loading_animation_widget`.
 - **Authentication**: Firebase Authentication for login and registration.
 - **Location Permissions**: Managed via `permission_handler` for requesting and accessing location data.
+
