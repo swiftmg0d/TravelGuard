@@ -39,6 +39,7 @@ class _MapScreenState extends State<MapScreen>
       )).listen((Position position) {
         if (mapState.sendNotifications) {
           MapUtils.checkRadiusUpdate(position, mapState, mapState.controller);
+        
         }
       });
     });

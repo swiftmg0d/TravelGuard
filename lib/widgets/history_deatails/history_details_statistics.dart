@@ -59,7 +59,8 @@ class HistoryDetailsStatistics extends StatelessWidget {
                         fontSize: 19, color: Color.fromARGB(255, 11, 70, 68)),
                     textAlign: TextAlign.center),
                 const SizedBox(width: 20),
-                Text("Time: ${widget.markerHistory.duration}",
+                Text(
+                    "Time: ${HistoryUtils.timeFromTo(widget.markerHistory.started, widget.markerHistory.finished)}",
                     style: GoogleFonts.staatliches(
                         fontSize: 19, color: Color.fromARGB(255, 11, 70, 68)),
                     textAlign: TextAlign.center),
